@@ -45,7 +45,7 @@ const Register = () => {
                 Đăng ký
               </button>
               <div className='mt-5 flex flex-col items-center text-sm'>
-                <span>Bằng việc đăng kí, bạn đã đồng ý với Shopee về</span>
+                <span className='text-center'>Bằng việc đăng kí, bạn đã đồng ý với Shopee về</span>
                 <p>
                   <span className='cursor-pointer pr-1 text-orange'>Điều khoản dịch vụ</span>&
                   <span className='cursor-pointer pl-1 text-orange'>Chính sách bảo mật</span>
