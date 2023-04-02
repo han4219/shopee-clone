@@ -4,6 +4,8 @@ import Input from 'src/components/Input'
 import { LoginFormData, loginSchema } from 'src/utils/rules'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { loginRequest } from 'src/apis/auth'
 
 const Login: React.FC = () => {
   const {
@@ -14,8 +16,16 @@ const Login: React.FC = () => {
     resolver: yupResolver(loginSchema)
   })
 
+  const loginMutation = useMutation({
+    mutationFn: (body: LoginFormData) => loginRequest(body)
+  })
+
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    console.log(data)
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data, 'login success')
+      }
+    })
   }
 
   return (

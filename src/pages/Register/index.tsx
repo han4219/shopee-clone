@@ -1,6 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Input from 'src/components/Input'
+import { omit } from 'lodash'
+import { registerRequest } from 'src/apis/auth'
+import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { RegisterFormData, registerSchema } from 'src/utils/rules'
@@ -14,8 +17,17 @@ const Register: React.FC = () => {
     resolver: yupResolver(registerSchema)
   })
 
+  const registerMutation = useMutation({
+    mutationFn: (body: Omit<RegisterFormData, 'confirm_password'>) => registerRequest(body)
+  })
+
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
-    console.log(data)
+    const body = omit(data, ['confirm_password'])
+    registerMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data, 'data')
+      }
+    })
   }
 
   return (
