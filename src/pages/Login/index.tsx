@@ -6,11 +6,14 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { loginRequest } from 'src/apis/auth'
+import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
+import { ResponseApi } from 'src/types/utils.type'
 
 const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema)
@@ -24,6 +27,20 @@ const Login: React.FC = () => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
         console.log(data, 'login success')
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ResponseApi<LoginFormData>>(error)) {
+          const formError = error.response?.data.data
+          console.log(formError, 'form error')
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof LoginFormData, {
+                type: 'Server',
+                message: formError[key as keyof LoginFormData]
+              })
+            })
+          }
+        }
       }
     })
   }
