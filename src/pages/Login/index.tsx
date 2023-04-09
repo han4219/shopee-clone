@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { LoginFormData, loginSchema } from 'src/utils/rules'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import { loginRequest } from 'src/apis/auth'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ResponseApi } from 'src/types/utils.type'
+import { toast } from 'react-toastify'
 
 const Login: React.FC = () => {
   const {
@@ -19,6 +20,7 @@ const Login: React.FC = () => {
     resolver: yupResolver(loginSchema)
   })
 
+  const navigate = useNavigate()
   const loginMutation = useMutation({
     mutationFn: (body: LoginFormData) => loginRequest(body)
   })
@@ -26,7 +28,11 @@ const Login: React.FC = () => {
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
-        console.log(data, 'login success')
+        // TODO save token to localStorage
+        navigate('/')
+        toast.success('Đăng nhập thành công', {
+          position: 'top-center'
+        })
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ResponseApi<LoginFormData>>(error)) {

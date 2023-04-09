@@ -26,7 +26,6 @@ class Http {
         return response
       },
       function (error: AxiosError) {
-        console.log(error.response?.status)
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data: any = error.response?.data
           const message = data.message || error.message

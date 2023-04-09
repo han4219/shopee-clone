@@ -5,6 +5,7 @@ import NotFound from './pages/NotFound'
 import { useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import RegisterLayout from './layouts/RegisterLayout'
+import ProductDetail from './pages/ProductDetail'
 
 const useRouteElements = () => {
   const protectedRoutes = useRoutes([
@@ -13,24 +14,30 @@ const useRouteElements = () => {
       element: <MainLayout />,
       children: [
         {
-          path: '',
+          index: true,
           element: <Products />
+        },
+        {
+          path: 'products/:Id',
+          element: <ProductDetail />
         }
       ]
     },
     {
-      path: '/',
-      element: <RegisterLayout />,
-      children: [
-        {
-          path: 'login',
-          element: <Login />
-        },
-        {
-          path: 'register',
-          element: <Register />
-        }
-      ]
+      path: '/login',
+      element: (
+        <RegisterLayout>
+          <Login />
+        </RegisterLayout>
+      )
+    },
+    {
+      path: '/register',
+      element: (
+        <RegisterLayout>
+          <Register />
+        </RegisterLayout>
+      )
     },
     {
       path: '*',
