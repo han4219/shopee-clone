@@ -13,6 +13,7 @@ module.exports = {
         orange: '#ee4d2d',
         grey: '#70707d',
         bodyColor: '#f5f5f5',
+        cyan: '#00bfa5',
         bgContentRegister: '#f9f0eb'
       }
     }

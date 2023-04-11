@@ -2,42 +2,74 @@ import Login from './pages/Login'
 import Products from './pages/Products'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
-import { useRoutes } from 'react-router-dom'
+import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import RegisterLayout from './layouts/RegisterLayout'
-import ProductDetail from './pages/ProductDetail'
+import Profile from './pages/Profile'
+import { useContext } from 'react'
+import { AppAuthContext } from './contexts/AuthContext'
+
+const ProtectedRoute = () => {
+  const { isAuthenticated } = useContext(AppAuthContext)
+  return isAuthenticated ? <Outlet /> : <Navigate to='/login' />
+}
+
+const RejectedRoute = () => {
+  const { isAuthenticated } = useContext(AppAuthContext)
+  return isAuthenticated ? <Navigate to='/' /> : <Outlet />
+}
 
 const useRouteElements = () => {
   const protectedRoutes = useRoutes([
     {
-      path: '/',
-      element: <MainLayout />,
+      path: '',
+      element: <ProtectedRoute />,
       children: [
         {
-          index: true,
-          element: <Products />
-        },
-        {
-          path: 'products/:Id',
-          element: <ProductDetail />
+          path: '',
+          element: <MainLayout />,
+          children: [
+            {
+              path: 'profile',
+              element: <Profile />
+            }
+          ]
         }
       ]
     },
     {
-      path: '/login',
-      element: (
-        <RegisterLayout>
-          <Login />
-        </RegisterLayout>
-      )
+      path: '',
+      element: <RejectedRoute />,
+      children: [
+        {
+          path: 'login',
+          element: (
+            <RegisterLayout>
+              <Login />
+            </RegisterLayout>
+          )
+        },
+        {
+          path: 'register',
+          element: (
+            <RegisterLayout>
+              <Register />
+            </RegisterLayout>
+          )
+        }
+      ]
     },
+
     {
-      path: '/register',
-      element: (
-        <RegisterLayout>
-          <Register />
-        </RegisterLayout>
-      )
+      path: '',
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          path: '',
+          element: <Products />
+        }
+      ]
     },
     {
       path: '*',

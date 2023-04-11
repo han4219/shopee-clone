@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { LoginFormData, loginSchema } from 'src/utils/rules'
@@ -7,10 +7,15 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { loginRequest } from 'src/apis/auth'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
-import { ResponseApi } from 'src/types/utils.type'
 import { toast } from 'react-toastify'
+import { ResponseError } from 'src/types/utils.type'
+import { AppAuthContext } from 'src/contexts/AuthContext'
+import Button from 'src/components/Button'
 
 const Login: React.FC = () => {
+  const navigate = useNavigate()
+  const { setIsAuthenticated } = useContext(AppAuthContext)
+
   const {
     register,
     handleSubmit,
@@ -20,22 +25,21 @@ const Login: React.FC = () => {
     resolver: yupResolver(loginSchema)
   })
 
-  const navigate = useNavigate()
   const loginMutation = useMutation({
     mutationFn: (body: LoginFormData) => loginRequest(body)
   })
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     loginMutation.mutate(data, {
-      onSuccess: (data) => {
-        // TODO save token to localStorage
-        navigate('/')
+      onSuccess: () => {
         toast.success('Đăng nhập thành công', {
-          position: 'top-center'
+          position: 'bottom-left'
         })
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<LoginFormData>>(error)) {
+        if (isAxiosUnprocessableEntityError<ResponseError<LoginFormData>>(error)) {
           const formError = error.response?.data.data
           console.log(formError, 'form error')
           if (formError) {
@@ -76,12 +80,13 @@ const Login: React.FC = () => {
                 errorMessage={errors.password?.message}
                 register={register}
               />
-              <button
-                className='mt-3 w-full rounded-sm bg-orange py-2 text-lg font-normal uppercase text-white hover:shadow-md'
+              <Button
+                loading={loginMutation.isLoading}
+                className='mt-3 flex w-full items-center justify-center rounded-sm bg-orange py-2 text-lg font-normal uppercase text-white transition-all hover:shadow-md'
                 type='submit'
               >
                 Đăng nhập
-              </button>
+              </Button>
               <div className='mt-5 text-center'>
                 <span className='pr-1 text-gray-400'>Bạn mới biết đến Shopee?</span>
                 <Link className='text-orange' to={'/register'}>

@@ -1,9 +1,13 @@
 import { toast } from 'react-toastify'
 import axios, { AxiosError, AxiosInstance, HttpStatusCode } from 'axios'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, setAccessTokenToLS } from './auth'
+import { AuthResponse } from 'src/types/auth.type'
 
 class Http {
   instance: AxiosInstance
+  private accessToken: string | null
   constructor() {
+    this.accessToken = getAccessTokenFromLS()
     this.instance = axios.create({
       baseURL: import.meta.env.VITE_API_URL,
       headers: {
@@ -13,19 +17,31 @@ class Http {
     })
 
     this.instance.interceptors.request.use(
-      function (config) {
+      (config) => {
+        if (this.accessToken && config.headers) {
+          config.headers.Authorization = this.accessToken
+          return config
+        }
         return config
       },
-      function (error) {
+      (error) => {
         return Promise.reject(error)
       }
     )
 
     this.instance.interceptors.response.use(
-      function (response) {
+      (response) => {
+        const url = response.config.url
+        if (url === '/login' || url === '/register') {
+          this.accessToken = (response.data as AuthResponse).data.access_token
+          setAccessTokenToLS(this.accessToken)
+        } else if (url === '/logout') {
+          this.accessToken = ''
+          clearAccessTokenFromLS()
+        }
         return response
       },
-      function (error: AxiosError) {
+      (error: AxiosError) => {
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data: any = error.response?.data
           const message = data.message || error.message

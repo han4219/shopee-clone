@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { omit } from 'lodash'
 import { registerRequest } from 'src/apis/auth'
@@ -8,9 +8,15 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { LoginFormData, RegisterFormData, registerSchema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
-import { ResponseApi } from 'src/types/utils.type'
+import { ResponseError } from 'src/types/utils.type'
+import { toast } from 'react-toastify'
+import { AppAuthContext } from 'src/contexts/AuthContext'
+import Button from 'src/components/Button'
 
 const Register: React.FC = () => {
+  const navigate = useNavigate()
+  const { setIsAuthenticated } = useContext(AppAuthContext)
+
   const {
     register,
     setError,
@@ -27,11 +33,15 @@ const Register: React.FC = () => {
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
     const body = omit(data, ['confirm_password'])
     registerMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data, 'data')
+      onSuccess: () => {
+        toast('Đăng ký thành công.', {
+          position: 'bottom-left'
+        })
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<LoginFormData>>(error)) {
+        if (isAxiosUnprocessableEntityError<ResponseError<LoginFormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -80,12 +90,13 @@ const Register: React.FC = () => {
                 register={register}
               />
 
-              <button
-                className='mt-3 w-full rounded-sm bg-orange py-2 text-lg font-normal uppercase text-white hover:shadow-md'
+              <Button
+                loading={registerMutation.isLoading}
+                className='mt-3 flex w-full items-center justify-center rounded-sm bg-orange py-2 text-lg font-normal uppercase text-white transition-all hover:shadow-md'
                 type='submit'
               >
                 Đăng ký
-              </button>
+              </Button>
               <div className='mt-5 flex flex-col items-center text-sm'>
                 <span className='text-center'>Bằng việc đăng kí, bạn đã đồng ý với Shopee về</span>
                 <p>
