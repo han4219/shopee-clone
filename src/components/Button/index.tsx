@@ -5,7 +5,6 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function Button({ loading = true, className, children, ...rest }: Props) {
-  console.log(loading)
   return (
     <button className={loading ? className + ' cursor-not-allowed opacity-80' : className} {...rest}>
       {loading && (

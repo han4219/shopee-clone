@@ -5,16 +5,17 @@ import { LoginFormData, loginSchema } from 'src/utils/rules'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { loginRequest } from 'src/apis/auth'
+import { login } from 'src/apis/auth'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { toast } from 'react-toastify'
 import { ResponseError } from 'src/types/utils.type'
 import { AppAuthContext } from 'src/contexts/AuthContext'
 import Button from 'src/components/Button'
+import path from 'src/constants/path'
 
 const Login: React.FC = () => {
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useContext(AppAuthContext)
+  const { setIsAuthenticated, setUser } = useContext(AppAuthContext)
 
   const {
     register,
@@ -26,15 +27,16 @@ const Login: React.FC = () => {
   })
 
   const loginMutation = useMutation({
-    mutationFn: (body: LoginFormData) => loginRequest(body)
+    mutationFn: (body: LoginFormData) => login(body)
   })
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (res) => {
         toast.success('Đăng nhập thành công', {
           position: 'bottom-left'
         })
+        setUser(res.data.data.user)
         setIsAuthenticated(true)
         navigate('/')
       },
@@ -89,7 +91,7 @@ const Login: React.FC = () => {
               </Button>
               <div className='mt-5 text-center'>
                 <span className='pr-1 text-gray-400'>Bạn mới biết đến Shopee?</span>
-                <Link className='text-orange' to={'/register'}>
+                <Link className='text-orange' to={path.register}>
                   Đăng ký
                 </Link>
               </div>

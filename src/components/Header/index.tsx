@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Cart from 'src/svgs/Cart'
 import ChervonDown from 'src/svgs/ChervonDown'
 import LanguageIcon from 'src/svgs/LanguageIcon'
@@ -7,14 +7,25 @@ import LogoShopee from 'src/svgs/LogoShopee'
 import Search from 'src/svgs/Search'
 import Popover from '../Popover'
 import { AppAuthContext } from 'src/contexts/AuthContext'
-import { clearAccessTokenFromLS } from 'src/utils/auth'
+import { useMutation } from '@tanstack/react-query'
+import { logout } from 'src/apis/auth'
+import Button from '../Button'
+import path from 'src/constants/path'
 
 const Header: React.FC = () => {
+  const { user } = useContext(AppAuthContext)
   const { isAuthenticated, setIsAuthenticated } = useContext(AppAuthContext)
 
+  const logoutMutation = useMutation({
+    mutationFn: logout
+  })
+
   const handleLogout = () => {
-    clearAccessTokenFromLS()
-    setIsAuthenticated(false)
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsAuthenticated(false)
+      }
+    })
   }
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)]'>
@@ -65,22 +76,23 @@ const Header: React.FC = () => {
                 <div className='flex flex-col rounded-sm bg-white shadow-md'>
                   <Link
                     className='px-5 py-3 text-sm transition-all hover:bg-gray-100 hover:text-cyan'
-                    to='/user/account/profile'
+                    to={path.profile}
                   >
                     Tài khoản của tôi
                   </Link>
                   <Link
                     className='px-5 py-3 text-sm transition-all hover:bg-gray-100 hover:text-cyan'
-                    to='/user/purchase'
+                    to={path.purchase}
                   >
                     Đơn mua
                   </Link>
-                  <button
-                    className='px-5 py-3 text-left text-sm transition-all hover:bg-gray-100 hover:text-cyan'
+                  <Button
+                    loading={logoutMutation.isLoading}
+                    className='flex items-center justify-start px-5 py-3 text-left text-sm transition-all hover:bg-gray-100 hover:text-cyan'
                     onClick={handleLogout}
                   >
                     Đăng xuất
-                  </button>
+                  </Button>
                 </div>
               }
             >
@@ -93,18 +105,18 @@ const Header: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <p>hoangan42</p>
+                  <p>{user?.email}</p>
                 </div>
               </div>
             </Popover>
           )}
           {!isAuthenticated && (
             <div className='ml-5 flex items-center justify-between gap-2'>
-              <Link to='/register' className='hover:text-gray-300'>
+              <Link to={path.register} className='hover:text-gray-300'>
                 Đăng ký
               </Link>
               <span className='h-4 w-[1px] bg-gray-300 opacity-30'></span>
-              <Link to='/login' className='hover:text-gray-300'>
+              <Link to={path.login} className='hover:text-gray-300'>
                 Đăng nhập
               </Link>
             </div>
@@ -219,7 +231,7 @@ const Header: React.FC = () => {
             >
               6
             </div>
-            <Link to='/cart'>
+            <Link to={path.cart}>
               <Cart />
             </Link>
           </div>

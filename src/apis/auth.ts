@@ -1,7 +1,8 @@
 import { AuthResponse } from 'src/types/auth.type'
 import request from 'src/utils/http'
 
-export const registerRequest = (body: { email: string; password: string }) =>
-  request.post<AuthResponse>('/register', body)
+export const register = (body: { email: string; password: string }) => request.post<AuthResponse>('/register', body)
 
-export const loginRequest = (body: { email: string; password: string }) => request.post<AuthResponse>('/login', body)
+export const login = (body: { email: string; password: string }) => request.post<AuthResponse>('/login', body)
+
+export const logout = () => request.post('/logout')

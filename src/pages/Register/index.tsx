@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { omit } from 'lodash'
-import { registerRequest } from 'src/apis/auth'
+import { register as registerAccount } from 'src/apis/auth'
 import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -15,7 +15,7 @@ import Button from 'src/components/Button'
 
 const Register: React.FC = () => {
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useContext(AppAuthContext)
+  const { setIsAuthenticated, setUser } = useContext(AppAuthContext)
 
   const {
     register,
@@ -27,16 +27,17 @@ const Register: React.FC = () => {
   })
 
   const registerMutation = useMutation({
-    mutationFn: (body: Omit<RegisterFormData, 'confirm_password'>) => registerRequest(body)
+    mutationFn: (body: Omit<RegisterFormData, 'confirm_password'>) => registerAccount(body)
   })
 
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
     const body = omit(data, ['confirm_password'])
     registerMutation.mutate(body, {
-      onSuccess: () => {
+      onSuccess: (res) => {
         toast('Đăng ký thành công.', {
           position: 'bottom-left'
         })
+        setUser(res.data.data.user)
         setIsAuthenticated(true)
         navigate('/')
       },
