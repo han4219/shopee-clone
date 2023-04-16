@@ -1,5 +1,5 @@
 import Login from './pages/Login'
-import Products from './pages/Products'
+import Products from './pages/ProductsList'
 import Register from './pages/Register'
 import NotFound from './pages/NotFound'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'

@@ -71,7 +71,7 @@ const Header: React.FC = () => {
             <Popover
               type='div'
               className='cursor-pointe ml-3'
-              offsetCrossAxis={-30}
+              offsetCrossAxis={-10}
               content={
                 <div className='flex flex-col rounded-sm bg-white shadow-md'>
                   <Link
@@ -148,65 +148,89 @@ const Header: React.FC = () => {
           offsetCrossAxis={-150}
           className='ml-5'
           content={
-            <div className='flex w-96 flex-col gap-4 rounded-sm bg-white text-sm shadow-md'>
+            <div className='flex w-[350px] flex-col gap-4 rounded-sm bg-white text-sm shadow-md md:w-96'>
               <div className='px-4 pt-3'>
                 <p className='text-base text-black opacity-30'>Sản phẩm mới thêm</p>
               </div>
               <div className='w-full'>
                 {/* Item */}
-                <div className='flex w-full cursor-pointer items-start justify-between px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-10 w-10 border-[1px] border-gray-300 bg-[url("https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn")] bg-cover bg-no-repeat'></div>
-                  <div className='flex items-center justify-between'>
-                    <div className='max-w-[205px] overflow-hidden text-ellipsis whitespace-nowrap'>
+                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
+                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
+                    <img
+                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
+                      alt=''
+                      className='object-cover'
+                    />
+                  </div>
+                  <div className='ml-2 overflow-hidden'>
+                    <div className='truncate'>
                       Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
                       Điện Thoại
                     </div>
                     <div className='flex-1'></div>
-                    <div className='ml-10'>
-                      <span className='text-orange'>₫569.000</span>
-                    </div>
+                  </div>
+                  <div className='flex-shink-0'>
+                    <span className='text-orange'>₫569.000</span>
                   </div>
                 </div>
                 {/* Item */}
-                <div className='flex w-full cursor-pointer items-start justify-between px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-10 w-10 border-[1px] border-gray-300 bg-[url("https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn")] bg-cover bg-no-repeat'></div>
-                  <div className='flex items-center justify-between'>
-                    <div className='max-w-[205px] overflow-hidden text-ellipsis whitespace-nowrap'>
+                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
+                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
+                    <img
+                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
+                      alt=''
+                      className='object-cover'
+                    />
+                  </div>
+                  <div className='ml-2 overflow-hidden'>
+                    <div className='truncate'>
                       Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
                       Điện Thoại
                     </div>
                     <div className='flex-1'></div>
-                    <div className='ml-10'>
-                      <span className='text-orange'>₫569.000</span>
-                    </div>
+                  </div>
+                  <div className='flex-shink-0'>
+                    <span className='text-orange'>₫569.000</span>
                   </div>
                 </div>
                 {/* Item */}
-                <div className='flex w-full cursor-pointer items-start justify-between px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-10 w-10 border-[1px] border-gray-300 bg-[url("https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn")] bg-cover bg-no-repeat'></div>
-                  <div className='flex items-center justify-between'>
-                    <div className='max-w-[205px] overflow-hidden text-ellipsis whitespace-nowrap'>
+                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
+                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
+                    <img
+                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
+                      alt=''
+                      className='object-cover'
+                    />
+                  </div>
+                  <div className='ml-2 overflow-hidden'>
+                    <div className='truncate'>
                       Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
                       Điện Thoại
                     </div>
                     <div className='flex-1'></div>
-                    <div className='ml-10'>
-                      <span className='text-orange'>₫569.000</span>
-                    </div>
+                  </div>
+                  <div className='flex-shink-0'>
+                    <span className='text-orange'>₫569.000</span>
                   </div>
                 </div>
                 {/* Item */}
-                <div className='flex w-full cursor-pointer items-start justify-between px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-10 w-10 border-[1px] border-gray-300 bg-[url("https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn")] bg-cover bg-no-repeat'></div>
-                  <div className='flex items-center justify-between'>
-                    <div className='max-w-[205px] overflow-hidden text-ellipsis whitespace-nowrap'>
+                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
+                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
+                    <img
+                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
+                      alt=''
+                      className='object-cover'
+                    />
+                  </div>
+                  <div className='ml-2 overflow-hidden'>
+                    <div className='truncate'>
                       Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
                       Điện Thoại
                     </div>
                     <div className='flex-1'></div>
-                    <div className='ml-10'>
-                      <span className='text-orange'>₫569.000</span>
-                    </div>
+                  </div>
+                  <div className='flex-shink-0'>
+                    <span className='text-orange'>₫569.000</span>
                   </div>
                 </div>
               </div>
@@ -231,9 +255,7 @@ const Header: React.FC = () => {
             >
               6
             </div>
-            <Link to={path.cart}>
-              <Cart />
-            </Link>
+            <Cart />
           </div>
         </Popover>
       </div>

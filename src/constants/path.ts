@@ -1,4 +1,5 @@
 const path = {
+  home: '/',
   login: '/login',
   logout: '/logout',
   cart: '/cart',
