@@ -5,17 +5,17 @@ import ChevronRight from 'src/svgs/ChevronRight'
 
 export default function Sort() {
   return (
-    <div className='rounded-sm bg-gray-200 shadow'>
+    <div className='rounded-sm bg-gray-300/60 shadow'>
       <div className='flex flex-wrap items-center justify-between px-4 text-sm font-light'>
-        <div className='flex items-center gap-3 py-3'>
+        <div className='flex flex-wrap items-center gap-3 py-3'>
           <p>Sắp xếp theo</p>
-          <Button className='rounded-sm bg-orange px-2 py-1.5 transition-all hover:opacity-80'>
+          <Button className='rounded-sm bg-orange px-4 py-2 transition-all hover:opacity-80'>
             <span className='w-full capitalize text-white'>phổ biến</span>
           </Button>
-          <Button className='rounded-sm bg-white  px-2 py-1.5   transition-all hover:opacity-80'>
+          <Button className='rounded-sm bg-white  px-4 py-2   transition-all hover:opacity-80'>
             <span className='w-full capitalize text-black'>mới nhất</span>
           </Button>
-          <Button className='rounded-sm  bg-white px-2 py-1.5 transition-all hover:opacity-80'>
+          <Button className='rounded-sm  bg-white px-4 py-2 transition-all hover:opacity-80'>
             <span className='w-full capitalize text-black'>bán chạy</span>
           </Button>
           <select defaultValue='price' className='w-44 rounded-sm bg-white py-2 text-left outline-none'>

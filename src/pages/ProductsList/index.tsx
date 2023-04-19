@@ -8,13 +8,10 @@ import productApi from 'src/apis/product'
 
 const ProductsList: React.FC = () => {
   const searchParams = useQueryParams()
-  const products = useQuery({
+  const { data } = useQuery({
     queryKey: ['products', searchParams],
     queryFn: () => {
       return productApi.getProducts(searchParams)
-    },
-    onSuccess: (data) => {
-      console.log(data.data.data)
     }
   })
 
@@ -27,11 +24,10 @@ const ProductsList: React.FC = () => {
         <div className='col-span-9'>
           <Sort />
           <div className='my-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-            {Array(30)
-              .fill(0)
-              .map((_, index) => (
-                <div className='col-span-1' key={index}>
-                  <Product />
+            {data &&
+              data.data.data.products.map((product) => (
+                <div className='col-span-1' key={product._id}>
+                  <Product product={product} />
                 </div>
               ))}
           </div>

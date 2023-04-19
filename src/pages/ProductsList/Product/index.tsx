@@ -1,30 +1,40 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
+import { Product as ProductType } from 'src/types/product.type'
+import { formatAmountSold, formatProductPrice } from 'src/utils/format'
 
-export default function Product() {
+type Props = {
+  product: ProductType
+}
+
+export default function Product({ product }: Props) {
+  const getWidthRating = (rating: number, index: number) => {
+    if (index <= rating) return 100
+    if (0 < index - rating && index - rating < 1) {
+      return 100 - (index - rating) * 100
+    }
+    return 0
+  }
+
   return (
     <Link to='/'>
       <div className='overflow-hidden rounded-sm bg-white shadow transition-transform duration-100 hover:scale-[1.01] hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
-            src='https://cf.shopee.vn/file/ea0f159f3f4c713abcf56b5ba73840b9_tn'
-            alt=''
+            src={product.image}
+            alt={product.name}
             className='absolute left-0 top-0 h-full w-full bg-white object-cover'
           />
         </div>
         <div className='overflow-hidden p-2'>
-          <div className='min-h-[1.75rem] text-sm line-clamp-2'>
-            [HÀNG HIỆU] Thắt Lưng Da Nam Khóa Tự Động Cao Cấp Dây Nịt Nam Mặt Xoay Chính Hãng , Phong Cách Hàn Quốc -
-            v77men
-          </div>
-          <div className='mt-3 flex items-center'>
+          <div className='min-h-[1.75rem] text-sm line-clamp-2'>{product.name}</div>
+          <div className='my-4 flex items-center'>
             <div className='max-w-[50%] truncate text-gray-500 line-through'>
               <span className='text-xs'>₫</span>
-              <span className='text-base'>9.000</span>
+              <span className='text-sm'>{formatProductPrice(product.price_before_discount)}</span>
             </div>
             <div className='ml-1 truncate text-orange'>
               <span className='text-xs'>₫</span>
-              <span className='text-base'>12.000</span>
+              <span className='text-sm'>{formatProductPrice(product.price)}</span>
             </div>
           </div>
           <div className='flex items-center'>
@@ -33,7 +43,10 @@ export default function Product() {
                 .fill(0)
                 .map((_, index) => (
                   <div className='relative mr-0.5 flex items-center' key={index}>
-                    <div className='absolute top-0 left-0 h-full overflow-hidden'>
+                    <div
+                      className={`absolute top-0 left-0 overflow-hidden`}
+                      style={{ width: `${getWidthRating(product.rating, index + 1)}%` }}
+                    >
                       <svg
                         enableBackground='new 0 0 15 15'
                         viewBox='0 0 15 15'
@@ -66,7 +79,7 @@ export default function Product() {
                   </div>
                 ))}
             </div>
-            <div className='ml-2 truncate text-sm'>Đã bán 28k</div>
+            <div className='ml-2 truncate text-xs'>Đã bán {formatAmountSold(product.sold)}</div>
           </div>
         </div>
       </div>
