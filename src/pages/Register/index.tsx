@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from 'src/components/Input'
 import { omit } from 'lodash'
-import { register as registerAccount } from 'src/apis/auth'
+import authApi from 'src/apis/auth'
 import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -27,7 +27,7 @@ const Register: React.FC = () => {
   })
 
   const registerMutation = useMutation({
-    mutationFn: (body: Omit<RegisterFormData, 'confirm_password'>) => registerAccount(body)
+    mutationFn: (body: Omit<RegisterFormData, 'confirm_password'>) => authApi.register(body)
   })
 
   const onSubmit: SubmitHandler<RegisterFormData> = (data) => {

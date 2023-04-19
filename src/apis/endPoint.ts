@@ -14,6 +14,6 @@ const endPoint = {
   refreshToken: '/refresh-access-token',
   buyPurchases: '/purchases/buy-products',
   updatePurchase: '/purchases/update-purchase'
-}
+} as const
 
 export default endPoint

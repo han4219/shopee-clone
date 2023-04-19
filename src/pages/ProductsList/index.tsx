@@ -2,8 +2,22 @@ import React from 'react'
 import Aside from './Aside'
 import Sort from './Sort'
 import Product from './Product'
+import { useQuery } from '@tanstack/react-query'
+import useQueryParams from 'src/hooks/useQueryParams'
+import productApi from 'src/apis/product'
 
-const ProductsList = () => {
+const ProductsList: React.FC = () => {
+  const searchParams = useQueryParams()
+  const products = useQuery({
+    queryKey: ['products', searchParams],
+    queryFn: () => {
+      return productApi.getProducts(searchParams)
+    },
+    onSuccess: (data) => {
+      console.log(data.data.data)
+    }
+  })
+
   return (
     <section className='bg-gray-200/80 py-6'>
       <div className='container grid grid-cols-12 gap-3 px-4'>

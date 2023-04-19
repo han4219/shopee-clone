@@ -19,15 +19,11 @@ export default function Sort() {
             <span className='w-full capitalize text-black'>bán chạy</span>
           </Button>
           <select defaultValue='price' className='w-44 rounded-sm bg-white py-2 text-left outline-none'>
-            <option value='price' disabled className='text-left'>
+            <option value='price' disabled>
               Giá
             </option>
-            <option value='price:asc' className='text-left'>
-              Giá: Thấp đến Cao
-            </option>
-            <option value='price:desc' className='text-left'>
-              Giá: Cao đến thấp
-            </option>
+            <option value='price:asc'>Giá: Thấp đến Cao</option>
+            <option value='price:desc'>Giá: Cao đến thấp</option>
           </select>
         </div>
         <div className='flex items-center gap-3 py-3'>

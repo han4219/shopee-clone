@@ -5,7 +5,7 @@ import { LoginFormData, loginSchema } from 'src/utils/rules'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { login } from 'src/apis/auth'
+import authApi from 'src/apis/auth'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { toast } from 'react-toastify'
 import { ResponseError } from 'src/types/utils.type'
@@ -27,7 +27,7 @@ const Login: React.FC = () => {
   })
 
   const loginMutation = useMutation({
-    mutationFn: (body: LoginFormData) => login(body)
+    mutationFn: (body: LoginFormData) => authApi.login(body)
   })
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {

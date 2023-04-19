@@ -68,7 +68,6 @@ export default function Product() {
             </div>
             <div className='ml-2 truncate text-sm'>Đã bán 28k</div>
           </div>
-          <div></div>
         </div>
       </div>
       <div></div>

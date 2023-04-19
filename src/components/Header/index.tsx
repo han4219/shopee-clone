@@ -8,7 +8,7 @@ import Search from 'src/svgs/Search'
 import Popover from '../Popover'
 import { AppAuthContext } from 'src/contexts/AuthContext'
 import { useMutation } from '@tanstack/react-query'
-import { logout } from 'src/apis/auth'
+import authApi from 'src/apis/auth'
 import Button from '../Button'
 import path from 'src/constants/path'
 
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AppAuthContext)
 
   const logoutMutation = useMutation({
-    mutationFn: logout
+    mutationFn: authApi.logout
   })
 
   const handleLogout = () => {
