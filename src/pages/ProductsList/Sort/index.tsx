@@ -1,4 +1,3 @@
-import React from 'react'
 import Button from 'src/components/Button'
 import ChevronLeft from 'src/svgs/ChevronLeft'
 import ChevronRight from 'src/svgs/ChevronRight'
