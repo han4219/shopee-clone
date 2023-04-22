@@ -19,7 +19,7 @@ const ProductsList: React.FC = () => {
   const queryConfig: QueryConfig = omitBy(
     {
       page: queryParams.page || '1',
-      limit: queryParams.limit,
+      limit: queryParams.limit || '20',
       order: queryParams.order,
       sort_by: queryParams.sort_by,
       category: queryParams.category,
@@ -37,7 +37,8 @@ const ProductsList: React.FC = () => {
     queryFn: () => {
       return productApi.getProducts(queryConfig as GetProductsConfig)
     },
-    keepPreviousData: true
+    keepPreviousData: true,
+    staleTime: 5000
   })
 
   return (
@@ -48,7 +49,7 @@ const ProductsList: React.FC = () => {
         </div>
         {data && (
           <div className='col-span-9'>
-            <Sort />
+            <Sort queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
             <div className='my-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
               {data.data.data.products.map((product) => (
                 <div className='col-span-1' key={product._id}>
