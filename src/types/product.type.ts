@@ -27,27 +27,15 @@ export interface ProductList {
   }
 }
 
-export enum Order {
-  ASC = 'asc',
-  DESC = 'desc'
-}
-
-export enum SortBy {
-  CREATED_AT = 'createdAt',
-  VIEW = 'view',
-  SOLD = 'sold',
-  PRICE = 'price'
-}
-
-export type GetProductsConfig = {
-  page?: number
-  limit?: number
-  order?: Order
-  sort_by?: SortBy
+export interface GetProductsConfig {
+  page?: number | string
+  limit?: number | string
+  order?: 'asc' | 'desc'
+  sort_by?: 'createdAt' | 'view' | 'sold' | 'price'
   category?: string
   exclude?: string
-  rating_filter?: number
-  price_max?: number
-  price_min?: number
+  rating_filter?: number | string
+  price_max?: number | string
+  price_min?: number | string
   name?: string
 }

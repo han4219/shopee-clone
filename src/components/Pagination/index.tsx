@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
+import classNames from 'classnames'
 import ChevronLeft from 'src/svgs/ChevronLeft'
 import ChevronRight from 'src/svgs/ChevronRight'
+import { QueryConfig } from 'src/pages/ProductsList'
+import { Link, createSearchParams } from 'react-router-dom'
+import path from 'src/constants/path'
 
 type Props = {
-  page: number
-  setPage: React.Dispatch<React.SetStateAction<number>>
+  queryConfig: QueryConfig
   pageSize: number
 }
 
@@ -28,7 +31,8 @@ const range = 2
  * 1 2 ... 18 19 [20]
  */
 
-export default function Pagination({ page, pageSize, setPage }: Props) {
+export default function Pagination({ queryConfig, pageSize }: Props) {
+  const page = Number(queryConfig.page)
   let showFront = false
   let showBehind = false
 
@@ -36,7 +40,11 @@ export default function Pagination({ page, pageSize, setPage }: Props) {
     if (index < page && index < page - range) {
       if (!showFront) {
         showFront = !showFront
-        return <div className='p-2 text-lg font-medium text-gray-500'>...</div>
+        return (
+          <div key={index} className='p-2 text-lg font-medium text-gray-500'>
+            ...
+          </div>
+        )
       }
     }
     return null
@@ -46,21 +54,28 @@ export default function Pagination({ page, pageSize, setPage }: Props) {
     if (index > page && index > page + range)
       if (!showBehind) {
         showBehind = !showBehind
-        return <div className='p-2 text-lg font-medium text-gray-500'>...</div>
+        return (
+          <div key={index} className='p-2 text-lg font-medium text-gray-500'>
+            ...
+          </div>
+        )
       }
     return null
   }
   return (
-    <div className='flex flex-wrap items-center justify-center'>
-      <button
-        disabled={page === 1}
-        onClick={() => setPage((prev) => prev - 1)}
-        className={`${
-          page === 1 ? 'cursor-not-allowed' : ''
-        } rounded p-2 transition-all hover:border-gray-400/80 hover:shadow`}
+    <div className='flex flex-wrap items-center justify-center gap-2'>
+      <Link
+        to={{
+          pathname: path.home,
+          search: createSearchParams({ ...queryConfig, page: (page - 1).toString() }).toString()
+        }}
+        className={classNames('rounded bg-white p-2 transition-all', {
+          'pointer-events-none': page === 1,
+          'hover:border-gray-400/80 hover:bg-gray-100 hover:shadow': page !== 1
+        })}
       >
-        <ChevronLeft width={25} height={25} strokeWidth={1.5} strokeColor='gray' />
-      </button>
+        <ChevronLeft width={25} height={25} strokeWidth={1.5} strokeColor='#363535' />
+      </Link>
       <div className='flex flex-wrap items-center gap-2'>
         {Array(pageSize)
           .fill(0)
@@ -78,25 +93,36 @@ export default function Pagination({ page, pageSize, setPage }: Props) {
               }
             }
             return (
-              <button
-                key={index}
-                onClick={() => setPage(pageNumber)}
-                className={`${pageNumber === page ? '!border-cyan' : ''} rounded border-2 border-transparent p-3`}
+              <Link
+                to={{
+                  pathname: path.home,
+                  search: createSearchParams({ ...queryConfig, page: pageNumber.toString() }).toString()
+                }}
+                key={pageNumber}
+                className={classNames(
+                  'hover flex h-10 w-10 items-center justify-center rounded bg-white text-gray-600',
+                  {
+                    '!bg-orange !text-white': pageNumber === page
+                  }
+                )}
               >
                 {pageNumber}
-              </button>
+              </Link>
             )
           })}
       </div>
-      <button
-        disabled={page === pageSize}
-        onClick={() => setPage((prev) => prev + 1)}
-        className={`${
-          page === pageSize ? 'cursor-not-allowed' : ''
-        } rounded p-2 transition-all hover:border-gray-400/80 hover:shadow`}
+      <Link
+        to={{
+          pathname: path.home,
+          search: createSearchParams({ ...queryConfig, page: (page + 1).toString() }).toString()
+        }}
+        className={classNames('rounded bg-white p-2 transition-all', {
+          'pointer-events-none': page === pageSize,
+          'hover:border-gray-400/80 hover:bg-gray-100 hover:shadow': page !== pageSize
+        })}
       >
-        <ChevronRight width={25} height={25} strokeWidth={1.5} strokeColor='gray' />
-      </button>
+        <ChevronRight width={25} height={25} strokeWidth={1.5} strokeColor='#363535' />
+      </Link>
     </div>
   )
 }
