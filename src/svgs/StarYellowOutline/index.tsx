@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function StarYellowOutline() {
   return (
-    <svg viewBox='0 0 30 30' className=''>
+    <svg viewBox='0 0 30 30' className='h-3. w-3.5'>
       <defs>
         <linearGradient id='star__hollow' x1='50%' x2='50%' y1='0%' y2='99.0177926%'>
           <stop offset='0%' stopColor='#FFD211' />

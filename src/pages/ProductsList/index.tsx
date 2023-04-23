@@ -8,6 +8,7 @@ import useQueryParams from 'src/hooks/useQueryParams'
 import productApi from 'src/apis/product'
 import Pagination from 'src/components/Pagination'
 import { GetProductsConfig } from 'src/types/product.type'
+import categoryApi from 'src/apis/category'
 
 export type QueryConfig = {
   [key in keyof GetProductsConfig]: string
@@ -32,33 +33,41 @@ const ProductsList: React.FC = () => {
     isUndefined
   )
 
-  const { data } = useQuery({
+  const { data: getProductsResult } = useQuery({
     queryKey: ['products', queryConfig],
     queryFn: () => {
       return productApi.getProducts(queryConfig as GetProductsConfig)
     },
-    keepPreviousData: true,
-    staleTime: 5000
+    keepPreviousData: true
+  })
+
+  const { data: getCategoryResult } = useQuery({
+    queryKey: ['category'],
+    queryFn: () => {
+      return categoryApi.getCategories()
+    }
   })
 
   return (
     <section className='bg-gray-200/80 py-6'>
       <div className='container grid grid-cols-12 gap-3 px-4'>
-        <div className='col-span-3'>
-          <Aside />
-        </div>
-        {data && (
+        {getCategoryResult && (
+          <div className='col-span-3'>
+            <Aside queryConfig={queryConfig} categories={getCategoryResult?.data.data} />
+          </div>
+        )}
+        {getProductsResult && (
           <div className='col-span-9'>
-            <Sort queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
+            <Sort queryConfig={queryConfig} pageSize={getProductsResult.data.data.pagination.page_size} />
             <div className='my-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
-              {data.data.data.products.map((product) => (
+              {getProductsResult.data.data.products.map((product) => (
                 <div className='col-span-1' key={product._id}>
                   <Product product={product} />
                 </div>
               ))}
             </div>
             <div>
-              <Pagination queryConfig={queryConfig} pageSize={data.data.data.pagination.page_size} />
+              <Pagination queryConfig={queryConfig} pageSize={getProductsResult.data.data.pagination.page_size} />
             </div>
           </div>
         )}

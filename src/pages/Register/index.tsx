@@ -70,6 +70,7 @@ const Register: React.FC = () => {
                 className='mt-8'
                 type='email'
                 name='email'
+                autoComplete='true'
                 placeholder='Email'
                 errorMessage={errors.email?.message}
                 register={register}
@@ -78,6 +79,7 @@ const Register: React.FC = () => {
                 name='password'
                 className='mt-2'
                 type='password'
+                autoComplete='true'
                 placeholder='Mật khẩu'
                 errorMessage={errors.password?.message}
                 register={register}
@@ -86,6 +88,7 @@ const Register: React.FC = () => {
                 name='confirm_password'
                 className='mt-2'
                 type='password'
+                autoComplete='true'
                 placeholder='Nhập lại mật khẩu'
                 errorMessage={errors.confirm_password?.message}
                 register={register}
