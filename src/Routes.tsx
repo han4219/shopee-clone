@@ -8,6 +8,7 @@ import RegisterLayout from './layouts/RegisterLayout'
 import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppAuthContext } from './contexts/AuthContext'
+import ProductDetail from './pages/ProductDetail'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppAuthContext)
@@ -68,6 +69,10 @@ const useRouteElements = () => {
           index: true,
           path: '',
           element: <Products />
+        },
+        {
+          path: ':Id',
+          element: <ProductDetail />
         }
       ]
     },

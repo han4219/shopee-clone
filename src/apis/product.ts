@@ -12,7 +12,7 @@ const productApi = {
     })
   },
   getProductDetail(id: string) {
-    return request.get<ResponseSuccess<Product>>(`URL/${id}`)
+    return request.get<ResponseSuccess<Product>>(`${URL}/${id}`)
   }
 }
 

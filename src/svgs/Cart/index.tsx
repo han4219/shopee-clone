@@ -1,11 +1,11 @@
-export default function Cart() {
+export default function Cart({ stroke = '#FFFFFF' }: { stroke?: string }) {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
       viewBox='0 0 24 24'
       strokeWidth='1.5'
-      stroke='#FFFFFF'
+      stroke={stroke}
       className='h-8 w-8'
     >
       <path
