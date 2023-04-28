@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppAuthContext } from './contexts/AuthContext'
 import ProductDetail from './pages/ProductDetail'
+import path from './constants/path'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppAuthContext)
@@ -43,7 +44,7 @@ const useRouteElements = () => {
       element: <RejectedRoute />,
       children: [
         {
-          path: 'login',
+          path: path.login,
           element: (
             <RegisterLayout>
               <Login />
@@ -51,7 +52,7 @@ const useRouteElements = () => {
           )
         },
         {
-          path: 'register',
+          path: path.register,
           element: (
             <RegisterLayout>
               <Register />
@@ -71,7 +72,7 @@ const useRouteElements = () => {
           element: <Products />
         },
         {
-          path: ':Id',
+          path: path.productDetail,
           element: <ProductDetail />
         }
       ]

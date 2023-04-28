@@ -11,17 +11,19 @@ import Minus from 'src/svgs/Minus'
 import Plus from 'src/svgs/Plus'
 import { formatProductPrice, formatSocialMediaNumber } from 'src/utils/format'
 import DOMPurify from 'dompurify'
+import { getProductIdFromURL } from 'src/utils/utils'
 
 const ProductDetail = () => {
-  const { Id } = useParams()
+  const { nameId } = useParams()
+  const id = getProductIdFromURL(nameId as string)
   const imageRef = useRef<HTMLImageElement>(null)
   const [currentImagesIndex, setCurrentImagesIndex] = useState([0, 5])
   const [indexActiveImage, setIndexActiveImage] = useState(0)
 
   const { data } = useQuery({
-    queryKey: ['product', [Id]],
+    queryKey: ['product', [id]],
     queryFn: () => {
-      return productApi.getProductDetail(Id as string)
+      return productApi.getProductDetail(id)
     }
   })
 
@@ -83,14 +85,18 @@ const ProductDetail = () => {
                         <div className='relative flex w-full justify-center gap-2'>
                           {currentImages?.map((image, index) => (
                             <div
+                              key={index}
                               onFocus={() => setIndexActiveImage(index)}
                               onMouseOver={() => setIndexActiveImage(index)}
-                              className={`w-[20%] cursor-pointer border-2 ${
+                              className={`relative w-[20%] cursor-pointer border-2 pt-[20%] ${
                                 indexActiveImage === index ? 'border-orange' : 'border-transparent'
                               }`}
-                              key={index}
                             >
-                              <img src={image} alt={data.data.data.name} />
+                              <img
+                                src={image}
+                                alt={data.data.data.name}
+                                className='absolute top-0 left-0 h-full w-full object-cover'
+                              />
                             </div>
                           ))}
                           <button

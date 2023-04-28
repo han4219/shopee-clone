@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Cart from 'src/svgs/Cart'
 import ChervonDown from 'src/svgs/ChervonDown'
 import LanguageIcon from 'src/svgs/LanguageIcon'
@@ -11,8 +11,24 @@ import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/apis/auth'
 import Button from '../Button'
 import path from 'src/constants/path'
+import Input from '../Input'
+import { useForm } from 'react-hook-form'
+import { SearchData, searchSchema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import useQueryConfig from 'src/hooks/useQueryConfig'
+import { omit } from 'lodash'
+import { SortBy } from 'src/types/product.type'
 
 const Header: React.FC = () => {
+  const { register, handleSubmit } = useForm<SearchData>({
+    defaultValues: {
+      searchName: ''
+    },
+    resolver: yupResolver(searchSchema)
+  })
+
+  const queryConfig = useQueryConfig()
+  const navigage = useNavigate()
   const { user } = useContext(AppAuthContext)
   const { isAuthenticated, setIsAuthenticated } = useContext(AppAuthContext)
 
@@ -27,6 +43,23 @@ const Header: React.FC = () => {
       }
     })
   }
+
+  const handleSearch = handleSubmit((data) => {
+    navigage({
+      pathname: path.home,
+      search: createSearchParams(
+        omit(
+          {
+            ...queryConfig,
+            name: data.searchName,
+            sort_by: SortBy.SOLD
+          },
+          ['order']
+        )
+      ).toString()
+    })
+  })
+
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)]'>
       {/* Start top header */}
@@ -125,18 +158,20 @@ const Header: React.FC = () => {
       </div>
       {/* End top header */}
       {/* Start search section */}
-      <div className='mx-auto flex max-w-7xl items-end gap-10 px-4 pb-5 pt-2'>
+      <div className='mx-auto flex max-w-7xl items-end gap-10 px-4 pb-5 pt-5'>
         <div className='hidden w-40 text-white md:block'>
           <Link to='/'>
             <LogoShopee />
           </Link>
         </div>
         <div className='ml-4 max-w-4xl grow rounded-sm bg-white p-1'>
-          <form className='flex justify-between gap-1 rounded'>
-            <input
-              type='text'
-              className='w-full indent-2 outline-1'
-              placeholder='Đăng ký và nhận voucher bạn mới đến 70k!'
+          <form className='flex justify-between gap-1 rounded-sm' onSubmit={handleSearch}>
+            <Input
+              register={register}
+              name='searchName'
+              className='w-full'
+              classNameInput='w-full h-full indent-2 outline-1'
+              placeholder='Đăng ký và nhận vourcher bạn mới đến 70k!'
             />
             <button type='submit' className='rounded-sm bg-orange px-5 py-2 transition-all hover:opacity-90'>
               <Search />

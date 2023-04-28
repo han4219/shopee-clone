@@ -39,13 +39,16 @@ export const schema = yup.object({
       }
       return value !== '' || price_min !== ''
     }
-  })
+  }),
+  searchName: yup.string().trim().required()
 })
 
 export const loginSchema = schema.pick(['email', 'password'])
 export const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 export const priceSchema = schema.pick(['price_min', 'price_max'])
+export const searchSchema = schema.pick(['searchName'])
 
 export type RegisterFormData = yup.InferType<typeof registerSchema>
 export type LoginFormData = yup.InferType<typeof loginSchema>
 export type PriceData = yup.InferType<typeof priceSchema>
+export type SearchData = yup.InferType<typeof searchSchema>

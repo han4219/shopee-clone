@@ -3,6 +3,7 @@ import RatingStarProduct from 'src/components/RatingStarProduct'
 import path from 'src/constants/path'
 import { Product as ProductType } from 'src/types/product.type'
 import { formatProductPrice, formatSocialMediaNumber } from 'src/utils/format'
+import { generateProductNameIdInURL } from 'src/utils/utils'
 
 type Props = {
   product: ProductType
@@ -10,7 +11,7 @@ type Props = {
 
 export default function Product({ product }: Props) {
   return (
-    <Link to={`${path.home}${product._id}`}>
+    <Link to={`${path.home}${generateProductNameIdInURL(product.name, product._id)}`}>
       <div className='overflow-hidden rounded-sm bg-white shadow transition-transform duration-100 hover:scale-[1.01] hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
