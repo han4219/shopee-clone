@@ -17,6 +17,7 @@ const ProductsList: React.FC = () => {
     queryFn: () => {
       return productApi.getProducts(queryConfig as GetProductsConfig)
     },
+    staleTime: 5 * 60 * 1000,
     keepPreviousData: true
   })
 

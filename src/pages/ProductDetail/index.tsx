@@ -12,6 +12,8 @@ import Plus from 'src/svgs/Plus'
 import { formatProductPrice, formatSocialMediaNumber } from 'src/utils/format'
 import DOMPurify from 'dompurify'
 import { getProductIdFromURL } from 'src/utils/utils'
+import { GetProductsConfig } from 'src/types/product.type'
+import Product from '../ProductsList/Product'
 
 const ProductDetail = () => {
   const { nameId } = useParams()
@@ -25,6 +27,18 @@ const ProductDetail = () => {
     queryFn: () => {
       return productApi.getProductDetail(id)
     }
+  })
+
+  const queryConfig: GetProductsConfig = { page: '1', limit: '100', category: data?.data.data.category._id }
+
+  const { data: productsData } = useQuery({
+    queryKey: ['products', [queryConfig]],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig as GetProductsConfig)
+    },
+    staleTime: 5 * 60 * 1000,
+    keepPreviousData: true,
+    enabled: Boolean(data)
   })
 
   const currentImages = useMemo(() => {
@@ -197,6 +211,18 @@ const ProductDetail = () => {
                     className='px-4'
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.data.data.description) }}
                   ></div>
+                </div>
+              </div>
+            </div>
+            <div className='container'>
+              <div>
+                <div className='py-6 text-lg uppercase text-gray-500'>Có thể bạn cũng thích</div>
+                <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+                  {productsData?.data.data.products.map((product) => (
+                    <div key={product._id}>
+                      <Product product={product} />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

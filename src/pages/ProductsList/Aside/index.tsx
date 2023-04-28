@@ -4,7 +4,6 @@ import path from 'src/constants/path'
 import CategoryIcon from 'src/svgs/CategoryIcon'
 import FunnelIcon from 'src/svgs/FunnelIcon'
 import { Category } from 'src/types/category.type'
-import { QueryConfig } from 'src/pages/ProductsList'
 import classNames from 'classnames'
 import { omit } from 'lodash'
 import { Controller, useForm } from 'react-hook-form'
@@ -13,6 +12,7 @@ import { PriceData, priceSchema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { WithoutNullableKeys } from 'src/types/utils.type'
 import RatingStarsFilter from 'src/components/RatingStarsFilter'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 
 type Props = {
   queryConfig: QueryConfig
