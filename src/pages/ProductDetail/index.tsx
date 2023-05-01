@@ -2,21 +2,21 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product'
-import InputNumber from 'src/components/InputNumber'
 import RatingStarProduct from 'src/components/RatingStarProduct'
 import Cart from 'src/svgs/Cart'
 import ChevronLeft from 'src/svgs/ChevronLeft'
 import ChevronRight from 'src/svgs/ChevronRight'
-import Minus from 'src/svgs/Minus'
-import Plus from 'src/svgs/Plus'
 import { formatProductPrice, formatSocialMediaNumber } from 'src/utils/format'
 import DOMPurify from 'dompurify'
 import { getProductIdFromURL } from 'src/utils/utils'
 import { GetProductsConfig } from 'src/types/product.type'
 import Product from '../ProductsList/Product'
+import QuantityController from 'src/components/QuantityController'
 
 const ProductDetail = () => {
+  const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
+  console.log(nameId, 'nameId')
   const id = getProductIdFromURL(nameId as string)
   const imageRef = useRef<HTMLImageElement>(null)
   const [currentImagesIndex, setCurrentImagesIndex] = useState([0, 5])
@@ -54,6 +54,10 @@ const ProductDetail = () => {
     if (data && currentImagesIndex[0] > 0) {
       setCurrentImagesIndex((prev) => [prev[0] - 1, prev[1] - 1])
     }
+  }
+
+  const handleBuyCount = (value: number) => {
+    setBuyCount(value)
   }
 
   const handleZoom = (event: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
@@ -173,18 +177,13 @@ const ProductDetail = () => {
                       <div className='my-6'>
                         <div className='flex items-center gap-4 text-sm text-gray-500'>
                           <p>Số Lượng</p>
-                          <div className='flex items-center justify-between rounded-sm border-[1px] border-gray-300'>
-                            <button className='border-r-[1px] border-gray-300 p-2'>
-                              <Minus />
-                            </button>
-                            <InputNumber
-                              classNameInput='outline-none text-center text-black text-base max-w-[50px]'
-                              value={1}
-                            />
-                            <button className='border-l-[1px] border-gray-300 p-2'>
-                              <Plus />
-                            </button>
-                          </div>
+                          <QuantityController
+                            value={buyCount}
+                            max={data.data.data.quantity}
+                            onIncrease={(buyCount) => handleBuyCount(buyCount)}
+                            onDecrease={(buyCount) => handleBuyCount(buyCount)}
+                            onTyping={(buyCount) => handleBuyCount(buyCount)}
+                          />
                           <p>{data.data.data.quantity} sản phẩm có sẵn</p>
                         </div>
                       </div>
