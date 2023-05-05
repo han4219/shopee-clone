@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Cart from 'src/svgs/Cart'
 import ChervonDown from 'src/svgs/ChervonDown'
@@ -7,7 +7,7 @@ import LogoShopee from 'src/svgs/LogoShopee'
 import Search from 'src/svgs/Search'
 import Popover from '../Popover'
 import { AppAuthContext } from 'src/contexts/AuthContext'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import authApi from 'src/apis/auth'
 import Button from '../Button'
 import path from 'src/constants/path'
@@ -23,7 +23,6 @@ import purchaseApi from 'src/apis/purchase'
 import { formatProductPrice } from 'src/utils/format'
 
 const Header: React.FC = () => {
-  const queryClient = useQueryClient()
   const { register, handleSubmit } = useForm<SearchData>({
     defaultValues: {
       searchName: ''
@@ -41,7 +40,7 @@ const Header: React.FC = () => {
   })
 
   const { data: purchaseData } = useQuery({
-    queryKey: ['getPurchases', purchasesStatus.IN_CART],
+    queryKey: ['getPurchases', { status: purchasesStatus.IN_CART }],
     queryFn: () => purchaseApi.getPurchases(purchasesStatus.IN_CART)
   })
 
@@ -68,12 +67,6 @@ const Header: React.FC = () => {
       ).toString()
     })
   })
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['getPurchases', purchasesStatus.IN_CART]
-    })
-  }, [queryClient])
 
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)]'>
@@ -199,12 +192,12 @@ const Header: React.FC = () => {
           className='ml-5'
           content={
             <div className='flex w-[350px] flex-col gap-4 rounded-sm bg-white text-sm shadow-md md:w-96'>
-              <div className='px-4 pt-3'>
-                <p className='text-base text-black opacity-30'>Sản phẩm mới thêm</p>
-              </div>
               <div className='w-full'>
-                {purchaseData ? (
-                  <>
+                {purchaseData && purchaseData?.data.data.length > 0 ? (
+                  <div>
+                    <div className='px-4 pt-3'>
+                      <p className='text-base text-black opacity-30'>Sản phẩm mới thêm</p>
+                    </div>
                     {purchaseData.data.data.slice(0, 5).map((purchase) => (
                       <div key={purchase._id} className='flex px-4 py-3 transition-all hover:bg-gray-100'>
                         <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
@@ -219,24 +212,26 @@ const Header: React.FC = () => {
                         </div>
                       </div>
                     ))}
-                  </>
+                    <div className='flex items-center justify-between px-4 pb-4'>
+                      <div>
+                        <span className='text-xs'>
+                          {purchaseData && purchaseData.data.data.length > 5 ? purchaseData.data.data.length - 5 : ''}{' '}
+                          Thêm Hàng Vào Giỏ
+                        </span>
+                      </div>
+                      <Link
+                        to='/cart'
+                        className='rounded-sm bg-orange px-3 py-2 text-white shadow transition-all hover:opacity-80'
+                      >
+                        Xem giỏ hàng
+                      </Link>
+                    </div>
+                  </div>
                 ) : (
-                  'Không có sản phẩm nào'
+                  <div className='flex items-center justify-center py-5 font-semibold text-gray-500'>
+                    Không có sản phẩm nào
+                  </div>
                 )}
-              </div>
-              <div className='flex items-center justify-between px-4 pb-4'>
-                <div>
-                  <span className='text-xs'>
-                    {purchaseData && purchaseData.data.data.length > 5 ? purchaseData.data.data.length - 5 : ''} Thêm
-                    Hàng Vào Giỏ
-                  </span>
-                </div>
-                <Link
-                  to='/cart'
-                  className='rounded-sm bg-orange px-3 py-2 text-white shadow transition-all hover:opacity-80'
-                >
-                  Xem giỏ hàng
-                </Link>
               </div>
             </div>
           }

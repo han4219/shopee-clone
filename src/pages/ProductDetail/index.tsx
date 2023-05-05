@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product'
@@ -14,8 +14,10 @@ import Product from '../ProductsList/Product'
 import QuantityController from 'src/components/QuantityController'
 import purchaseApi from 'src/apis/purchase'
 import { toast } from 'react-toastify'
+import { purchasesStatus } from 'src/constants/purchase'
 
 const ProductDetail = () => {
+  const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getProductIdFromURL(nameId as string)
@@ -53,7 +55,13 @@ const ProductDetail = () => {
   })
 
   const addToCart = (data: { product_id: string; buy_count: number }) => {
-    addToCartMutation.mutate(data)
+    addToCartMutation.mutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['getPurchases', { status: purchasesStatus.IN_CART }]
+        })
+      }
+    })
   }
 
   const currentImages = useMemo(() => {
