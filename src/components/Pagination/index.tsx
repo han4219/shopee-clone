@@ -2,9 +2,9 @@ import React from 'react'
 import classNames from 'classnames'
 import ChevronLeft from 'src/svgs/ChevronLeft'
 import ChevronRight from 'src/svgs/ChevronRight'
-import { QueryConfig } from 'src/pages/ProductsList'
 import { Link, createSearchParams } from 'react-router-dom'
 import path from 'src/constants/path'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 
 type Props = {
   queryConfig: QueryConfig

@@ -4,9 +4,9 @@ import path from 'src/constants/path'
 import Button from 'src/components/Button'
 import ChevronLeft from 'src/svgs/ChevronLeft'
 import ChevronRight from 'src/svgs/ChevronRight'
-import { QueryConfig } from 'src/pages/ProductsList'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { GetProductsConfig, SortBy, Order } from 'src/types/product.type'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 
 type Props = {
   queryConfig: QueryConfig

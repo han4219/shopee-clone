@@ -1,7 +1,7 @@
 import React from 'react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
-import { QueryConfig } from 'src/pages/ProductsList'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 import StarYellow from 'src/svgs/StarYellow'
 import StarYellowOutline from 'src/svgs/StarYellowOutline'
 
