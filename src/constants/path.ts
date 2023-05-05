@@ -5,7 +5,7 @@ const path = {
   cart: '/cart',
   register: '/register',
   profile: '/profile',
-  purchase: '/purchase',
+  purchase: '/purchases',
   productDetail: '/:nameId'
 }
 

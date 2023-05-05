@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product'
@@ -12,11 +12,12 @@ import { getProductIdFromURL } from 'src/utils/utils'
 import { GetProductsConfig } from 'src/types/product.type'
 import Product from '../ProductsList/Product'
 import QuantityController from 'src/components/QuantityController'
+import purchaseApi from 'src/apis/purchase'
+import { toast } from 'react-toastify'
 
 const ProductDetail = () => {
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
-  console.log(nameId, 'nameId')
   const id = getProductIdFromURL(nameId as string)
   const imageRef = useRef<HTMLImageElement>(null)
   const [currentImagesIndex, setCurrentImagesIndex] = useState([0, 5])
@@ -40,6 +41,20 @@ const ProductDetail = () => {
     keepPreviousData: true,
     enabled: Boolean(data)
   })
+
+  const addToCartMutation = useMutation({
+    mutationKey: ['add-to-cart'],
+    mutationFn: purchaseApi.addToCart,
+    onSuccess: (data) => {
+      toast.success(data.data.message, {
+        position: 'top-center'
+      })
+    }
+  })
+
+  const addToCart = (data: { product_id: string; buy_count: number }) => {
+    addToCartMutation.mutate(data)
+  }
 
   const currentImages = useMemo(() => {
     return data?.data.data.images.slice(...currentImagesIndex)
@@ -189,7 +204,10 @@ const ProductDetail = () => {
                       </div>
                       <div className='mt-6'>
                         <div className='flex items-center gap-4'>
-                          <button className='flex items-center gap-2 rounded-sm border border-orange bg-orange/10 px-6 py-2 transition-all hover:bg-orange/20'>
+                          <button
+                            onClick={() => addToCart({ product_id: data.data.data._id, buy_count: buyCount })}
+                            className='flex items-center gap-2 rounded-sm border border-orange bg-orange/10 px-6 py-2 transition-all hover:bg-orange/20'
+                          >
                             <Cart stroke='#ee4d2d' />
                             <span className='text-base capitalize text-orange'>thêm vào giỏ hàng</span>
                           </button>

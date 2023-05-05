@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Cart from 'src/svgs/Cart'
 import ChervonDown from 'src/svgs/ChervonDown'
@@ -7,7 +7,7 @@ import LogoShopee from 'src/svgs/LogoShopee'
 import Search from 'src/svgs/Search'
 import Popover from '../Popover'
 import { AppAuthContext } from 'src/contexts/AuthContext'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import authApi from 'src/apis/auth'
 import Button from '../Button'
 import path from 'src/constants/path'
@@ -18,8 +18,12 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import { omit } from 'lodash'
 import { SortBy } from 'src/types/product.type'
+import { purchasesStatus } from 'src/constants/purchase'
+import purchaseApi from 'src/apis/purchase'
+import { formatProductPrice } from 'src/utils/format'
 
 const Header: React.FC = () => {
+  const queryClient = useQueryClient()
   const { register, handleSubmit } = useForm<SearchData>({
     defaultValues: {
       searchName: ''
@@ -34,6 +38,11 @@ const Header: React.FC = () => {
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout
+  })
+
+  const { data: purchaseData } = useQuery({
+    queryKey: ['getPurchases', purchasesStatus.IN_CART],
+    queryFn: () => purchaseApi.getPurchases(purchasesStatus.IN_CART)
   })
 
   const handleLogout = () => {
@@ -59,6 +68,12 @@ const Header: React.FC = () => {
       ).toString()
     })
   })
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['getPurchases', purchasesStatus.IN_CART]
+    })
+  }, [queryClient])
 
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)]'>
@@ -188,90 +203,33 @@ const Header: React.FC = () => {
                 <p className='text-base text-black opacity-30'>Sản phẩm mới thêm</p>
               </div>
               <div className='w-full'>
-                {/* Item */}
-                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
-                    <img
-                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
-                      alt=''
-                      className='object-cover'
-                    />
-                  </div>
-                  <div className='ml-2 overflow-hidden'>
-                    <div className='truncate'>
-                      Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
-                      Điện Thoại
-                    </div>
-                    <div className='flex-1'></div>
-                  </div>
-                  <div className='flex-shink-0'>
-                    <span className='text-orange'>₫569.000</span>
-                  </div>
-                </div>
-                {/* Item */}
-                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
-                    <img
-                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
-                      alt=''
-                      className='object-cover'
-                    />
-                  </div>
-                  <div className='ml-2 overflow-hidden'>
-                    <div className='truncate'>
-                      Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
-                      Điện Thoại
-                    </div>
-                    <div className='flex-1'></div>
-                  </div>
-                  <div className='flex-shink-0'>
-                    <span className='text-orange'>₫569.000</span>
-                  </div>
-                </div>
-                {/* Item */}
-                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
-                    <img
-                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
-                      alt=''
-                      className='object-cover'
-                    />
-                  </div>
-                  <div className='ml-2 overflow-hidden'>
-                    <div className='truncate'>
-                      Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
-                      Điện Thoại
-                    </div>
-                    <div className='flex-1'></div>
-                  </div>
-                  <div className='flex-shink-0'>
-                    <span className='text-orange'>₫569.000</span>
-                  </div>
-                </div>
-                {/* Item */}
-                <div className='flex px-4 py-3 transition-all hover:bg-gray-100'>
-                  <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
-                    <img
-                      src='https://down-vn.img.susercontent.com/file/sg-11134201-23010-rodv979ytxlv5c_tn'
-                      alt=''
-                      className='object-cover'
-                    />
-                  </div>
-                  <div className='ml-2 overflow-hidden'>
-                    <div className='truncate'>
-                      Loa Soundbar Bluetooth Âm Thanh Vòm 8D BASS BOSEBT-D01 Super Bass 2023 Cho Tivi Máy Tính Laptop PC
-                      Điện Thoại
-                    </div>
-                    <div className='flex-1'></div>
-                  </div>
-                  <div className='flex-shink-0'>
-                    <span className='text-orange'>₫569.000</span>
-                  </div>
-                </div>
+                {purchaseData ? (
+                  <>
+                    {purchaseData.data.data.slice(0, 5).map((purchase) => (
+                      <div key={purchase._id} className='flex px-4 py-3 transition-all hover:bg-gray-100'>
+                        <div className='h-11 w-11 flex-shrink-0 border-[1px] border-gray-300'>
+                          <img src={purchase.product.image} alt={purchase.product.name} className='object-cover' />
+                        </div>
+                        <div className='ml-2 overflow-hidden'>
+                          <div className='truncate'>{purchase.product.name}</div>
+                          <div className='flex-1'></div>
+                        </div>
+                        <div className='flex-shink-0'>
+                          <span className='text-orange'>₫{formatProductPrice(purchase.product.price)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  'Không có sản phẩm nào'
+                )}
               </div>
               <div className='flex items-center justify-between px-4 pb-4'>
                 <div>
-                  <span className='text-xs'>1 Thêm Hàng Vào Giỏ</span>
+                  <span className='text-xs'>
+                    {purchaseData && purchaseData.data.data.length > 5 ? purchaseData.data.data.length - 5 : ''} Thêm
+                    Hàng Vào Giỏ
+                  </span>
                 </div>
                 <Link
                   to='/cart'
@@ -283,12 +241,12 @@ const Header: React.FC = () => {
             </div>
           }
         >
-          <div className='relative'>
+          <div className='relative cursor-pointer'>
             <div
               className='absolute -right-4 -top-3 flex items-center justify-center rounded-3xl border-[2px] border-orange bg-white px-2.5 py-[1px] text-sm
              text-orange'
             >
-              6
+              {purchaseData?.data.data.length}
             </div>
             <Cart />
           </div>
