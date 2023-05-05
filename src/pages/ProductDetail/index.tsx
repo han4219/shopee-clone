@@ -201,11 +201,11 @@ const ProductDetail = () => {
                         <div className='flex items-center gap-4 text-sm text-gray-500'>
                           <p>Số Lượng</p>
                           <QuantityController
-                            // value={buyCount}
+                            value={buyCount}
                             max={data.data.data.quantity}
-                            // onIncrease={(buyCount) => handleBuyCount(buyCount)}
-                            // onDecrease={(buyCount) => handleBuyCount(buyCount)}
-                            // onTyping={(buyCount) => handleBuyCount(buyCount)}
+                            onIncrease={(buyCount) => handleBuyCount(buyCount)}
+                            onDecrease={(buyCount) => handleBuyCount(buyCount)}
+                            onTyping={(buyCount) => handleBuyCount(buyCount)}
                           />
                           <p>{data.data.data.quantity} sản phẩm có sẵn</p>
                         </div>
