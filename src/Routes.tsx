@@ -10,6 +10,7 @@ import { useContext } from 'react'
 import { AppAuthContext } from './contexts/AuthContext'
 import ProductDetail from './pages/ProductDetail'
 import path from './constants/path'
+import Cart from './pages/Cart'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppAuthContext)
@@ -32,8 +33,12 @@ const useRouteElements = () => {
           element: <MainLayout />,
           children: [
             {
-              path: 'profile',
+              path: path.profile,
               element: <Profile />
+            },
+            {
+              path: path.cart,
+              element: <Cart />
             }
           ]
         }

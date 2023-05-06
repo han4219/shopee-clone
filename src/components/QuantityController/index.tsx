@@ -9,9 +9,21 @@ interface Props extends InputNumberProps {
   onDecrease?: (value: number) => void
   max: number
   value?: number
+  increaseBtnClassName?: string
+  decreaseBtnClassName?: string
 }
 
-const QuantityController: React.FC<Props> = ({ max, value, onTyping, onIncrease, onDecrease, ...rest }) => {
+const QuantityController: React.FC<Props> = ({
+  max,
+  value,
+  onTyping,
+  onIncrease,
+  onDecrease,
+  classNameInput,
+  decreaseBtnClassName = 'border-r-[1px] border-gray-300 p-2',
+  increaseBtnClassName = 'border-l-[1px] border-gray-300 p-2',
+  ...rest
+}) => {
   const [localValue, setLocalValue] = useState(value || 1)
   const handleTyping = (event: ChangeEvent<HTMLInputElement>) => {
     let _value
@@ -48,15 +60,15 @@ const QuantityController: React.FC<Props> = ({ max, value, onTyping, onIncrease,
 
   return (
     <div className='flex items-center justify-between rounded-sm border-[1px] border-gray-300'>
-      <button onClick={() => handleDecrease(value || localValue)} className='border-r-[1px] border-gray-300 p-2'>
+      <button onClick={() => handleDecrease(value || localValue)} className={decreaseBtnClassName}>
         <Minus />
       </button>
       <InputNumber
         onChange={handleTyping}
-        classNameInput='outline-none text-center text-black text-base max-w-[70px]'
+        classNameInput={classNameInput || 'outline-none text-center text-black text-base max-w-[70px]'}
         value={value || localValue}
       />
-      <button onClick={() => handleIncrease(value || localValue)} className='border-l-[1px] border-gray-300 p-2'>
+      <button onClick={() => handleIncrease(value || localValue)} className={increaseBtnClassName}>
         <Plus />
       </button>
     </div>

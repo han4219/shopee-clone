@@ -9,6 +9,9 @@ module.exports = {
   },
   theme: {
     extend: {
+      boxShadow: {
+        'shadow-cart': '0px -2px 8px #ccc'
+      },
       colors: {
         orange: '#ee4d2d',
         grey: '#70707d',

@@ -41,7 +41,8 @@ const Header: React.FC = () => {
 
   const { data: purchaseData } = useQuery({
     queryKey: ['getPurchases', { status: purchasesStatus.IN_CART }],
-    queryFn: () => purchaseApi.getPurchases(purchasesStatus.IN_CART)
+    queryFn: () => purchaseApi.getPurchases(purchasesStatus.IN_CART),
+    enabled: isAuthenticated
   })
 
   const handleLogout = () => {
@@ -193,7 +194,7 @@ const Header: React.FC = () => {
           content={
             <div className='flex w-[350px] flex-col gap-4 rounded-sm bg-white text-sm shadow-md md:w-96'>
               <div className='w-full'>
-                {purchaseData && purchaseData?.data.data.length > 0 ? (
+                {purchaseData && isAuthenticated && purchaseData?.data.data.length > 0 ? (
                   <div>
                     <div className='px-4 pt-3'>
                       <p className='text-base text-black opacity-30'>Sản phẩm mới thêm</p>
@@ -236,15 +237,19 @@ const Header: React.FC = () => {
             </div>
           }
         >
-          <div className='relative cursor-pointer'>
-            <div
-              className='absolute -right-4 -top-3 flex items-center justify-center rounded-3xl border-[2px] border-orange bg-white px-2.5 py-[1px] text-sm
+          <Link to={path.cart}>
+            <div className='relative cursor-pointer'>
+              <Cart />
+              {isAuthenticated && (
+                <div
+                  className='absolute -right-4 -top-3 flex items-center justify-center rounded-3xl border-[2px] border-orange bg-white px-2.5 py-[1px] text-sm
              text-orange'
-            >
-              {purchaseData?.data.data.length}
+                >
+                  {purchaseData?.data.data.length}
+                </div>
+              )}
             </div>
-            <Cart />
-          </div>
+          </Link>
         </Popover>
       </div>
       {/* End search section */}
