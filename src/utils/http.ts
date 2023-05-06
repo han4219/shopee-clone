@@ -43,6 +43,9 @@ class Http {
         return response
       },
       (error: AxiosError) => {
+        if (error.response?.status === HttpStatusCode.Unauthorized) {
+          clearLS()
+        }
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data: any = error.response?.data
           const message = data.message || error.message
