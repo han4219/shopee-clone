@@ -166,7 +166,7 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className='mt-4 bg-white py-5 px-4'>
+            <div className={`${extendedPuchases.length > 0 ? '' : 'hidden'} mt-4 bg-white py-5 px-4`}>
               {purchaseData &&
                 extendedPuchases.map((purchase, index) => (
                   <div
