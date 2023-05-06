@@ -7,6 +7,7 @@ interface Props extends InputNumberProps {
   onTyping?: (value: number) => void
   onIncrease?: (value: number) => void
   onDecrease?: (value: number) => void
+  onFocusOut?: (value: number) => void
   max: number
   value?: number
   increaseBtnClassName?: string
@@ -17,6 +18,7 @@ const QuantityController: React.FC<Props> = ({
   max,
   value,
   onTyping,
+  onFocusOut,
   onIncrease,
   onDecrease,
   classNameInput,
@@ -25,12 +27,21 @@ const QuantityController: React.FC<Props> = ({
   ...rest
 }) => {
   const [localValue, setLocalValue] = useState(value || 1)
+
+  const handleFocusOut = (event: React.FocusEvent<HTMLInputElement, Element>) => {
+    onFocusOut && onFocusOut(Number(event.target.value))
+    setLocalValue(Number(event.target.value))
+  }
   const handleTyping = (event: ChangeEvent<HTMLInputElement>) => {
     let _value
     if (Number(event.target.value) > max) {
       _value = max
     } else {
-      _value = Number(event.target.value)
+      if (Number(event.target.value) === 0) {
+        _value = 1
+      } else {
+        _value = Number(event.target.value)
+      }
     }
     onTyping && onTyping(_value)
     setLocalValue(_value)
@@ -64,9 +75,11 @@ const QuantityController: React.FC<Props> = ({
         <Minus />
       </button>
       <InputNumber
+        onBlur={handleFocusOut}
         onChange={handleTyping}
         classNameInput={classNameInput || 'outline-none text-center text-black text-base max-w-[70px]'}
         value={value || localValue}
+        {...rest}
       />
       <button onClick={() => handleIncrease(value || localValue)} className={increaseBtnClassName}>
         <Plus />

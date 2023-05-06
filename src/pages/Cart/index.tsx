@@ -1,18 +1,91 @@
-import { useQuery } from '@tanstack/react-query'
-import React from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import purchaseApi from 'src/apis/purchase'
 import QuantityController from 'src/components/QuantityController'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
+import { Purchase } from 'src/types/purchase.type'
 import { formatProductPrice, formatSocialMediaNumber } from 'src/utils/format'
 import { generateProductNameIdInURL } from 'src/utils/utils'
+import { produce } from 'immer'
+import { keyBy } from 'lodash'
+
+interface ExtendedPurchase extends Purchase {
+  disable: boolean
+  checked: boolean
+}
 
 export default function Cart() {
-  const { data: purchaseData } = useQuery({
+  const [extendedPuchases, setExtendedPurchases] = useState<ExtendedPurchase[]>([])
+  const isCheckedAll = useMemo(() => {
+    return extendedPuchases.every((purchase) => purchase.checked)
+  }, [extendedPuchases])
+
+  const { data: purchaseData, refetch } = useQuery({
     queryKey: ['getPurchases', { status: purchasesStatus.IN_CART }],
     queryFn: () => purchaseApi.getPurchases(purchasesStatus.IN_CART)
   })
+
+  const updatePurchaseMutation = useMutation({
+    mutationFn: purchaseApi.updatePurchase,
+    onSuccess: () => {
+      refetch()
+    }
+  })
+
+  const handleUpdateQuantity = (purchaseIndex: number, value: number, enable: boolean) => {
+    if (!enable) {
+      return
+    }
+    const purchase = extendedPuchases[purchaseIndex]
+    setExtendedPurchases(
+      produce(extendedPuchases, (draft) => {
+        draft[purchaseIndex].disable = true
+      })
+    )
+
+    updatePurchaseMutation.mutate({ product_id: purchase.product._id, buy_count: value })
+  }
+
+  const handleTypeQuantity = (purchaseIndex: number) => (value: number) => {
+    setExtendedPurchases(
+      produce(extendedPuchases, (draft) => {
+        draft[purchaseIndex].buy_count = value
+      })
+    )
+  }
+
+  const handleCheck = (purchaseIndex: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setExtendedPurchases(
+      produce(extendedPuchases, (draft) => {
+        draft[purchaseIndex].checked = event.target.checked
+      })
+    )
+  }
+
+  const handleCheckAll = () => {
+    setExtendedPurchases((prev) =>
+      prev.map((purchase) => ({
+        ...purchase,
+        checked: !isCheckedAll
+      }))
+    )
+  }
+
+  useEffect(() => {
+    setExtendedPurchases((prev) => {
+      const purchaseObject = keyBy(prev, '_id')
+      return (
+        purchaseData?.data.data.map((purchase) => ({
+          ...purchase,
+          disable: false,
+          checked: Boolean(purchaseObject[purchase._id]?.checked || false)
+        })) || []
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [purchaseData])
 
   return (
     <div className='border-b-2 border-orange bg-bodyColor py-16'>
@@ -23,7 +96,12 @@ export default function Cart() {
               <div className='col-span-6'>
                 <div className='flex items-center justify-center'>
                   <div className='flex-shrink-0'>
-                    <input type='checkbox' className='h-5 w-5 border border-gray-300 accent-orange' />
+                    <input
+                      onChange={handleCheckAll}
+                      type='checkbox'
+                      checked={isCheckedAll}
+                      className='h-5 w-5 border border-gray-300 accent-orange'
+                    />
                   </div>
                   <div className='ml-5 flex-grow'>Sản phẩm</div>
                 </div>
@@ -40,7 +118,7 @@ export default function Cart() {
 
             <div className='mt-4 bg-white py-5 px-4'>
               {purchaseData &&
-                purchaseData.data.data.map((purchase) => (
+                extendedPuchases.map((purchase, index) => (
                   <div
                     className='mt-5 grid grid-cols-12 rounded-sm border border-gray-200 px-5 py-6 text-sm first:mt-0'
                     key={purchase._id}
@@ -48,7 +126,12 @@ export default function Cart() {
                     <div className='col-span-6'>
                       <div className='flex items-center justify-center gap-3'>
                         <div className='flex-shrink-0'>
-                          <input type='checkbox' className='h-5 w-5 border border-gray-300 accent-orange' />
+                          <input
+                            checked={extendedPuchases[index]?.checked || false}
+                            onChange={handleCheck(index)}
+                            type='checkbox'
+                            className='h-5 w-5 border border-gray-300 accent-orange'
+                          />
                         </div>
                         <div className='h-20 w-20 flex-shrink-0 overflow-hidden rounded border'>
                           <Link
@@ -70,9 +153,24 @@ export default function Cart() {
                         </div>
                         <div className='col-span-1 flex items-center justify-center'>
                           <QuantityController
-                            max={purchase.product.quantity}
+                            disabled={purchase.disable}
                             value={purchase.buy_count}
-                            classNameInput='outline-none text-center text-black text-base max-w-[30px]'
+                            max={purchase.product.quantity}
+                            onTyping={handleTypeQuantity(index)}
+                            onDecrease={(value) => handleUpdateQuantity(index, value, purchase.buy_count > 1)}
+                            onIncrease={(value) =>
+                              handleUpdateQuantity(index, value, purchase.buy_count < purchase.product.quantity)
+                            }
+                            onFocusOut={(value) =>
+                              handleUpdateQuantity(
+                                index,
+                                value,
+                                purchase.buy_count >= 1 &&
+                                  purchase.buy_count <= purchase.product.quantity &&
+                                  value !== purchaseData.data.data[index].buy_count
+                              )
+                            }
+                            classNameInput='outline-none text-center text-black text-base max-w-[40px]'
                             decreaseBtnClassName='border-r-[1px] border-gray-300 p-1'
                             increaseBtnClassName='border-l-[1px] border-gray-300 p-1'
                           />
@@ -95,7 +193,9 @@ export default function Cart() {
             <div className='flex items-center'>
               <div className='flex-shrink-0'>
                 <input
+                  checked={isCheckedAll}
                   type='checkbox'
+                  onChange={handleCheckAll}
                   id='select-all'
                   className='h-5 w-5 cursor-pointer border border-gray-300 accent-orange'
                 />
@@ -103,7 +203,7 @@ export default function Cart() {
               <div className='ml-3 capitalize text-gray-800'>
                 <label htmlFor='select-all' className='cursor-pointer'>
                   Chọn tất cả {'('}
-                  {purchaseData?.data.data.length}
+                  {extendedPuchases.length}
                   {')'}
                 </label>
               </div>
@@ -119,7 +219,7 @@ export default function Cart() {
                 <div className='ml-1 flex flex-col'>
                   <p className='-mt-1 text-2xl text-orange'>₫{formatProductPrice(234000)}</p>
                   <div className='text-base'>
-                    Tiết kiệm {'      '} <span className='text-sm text-orange'>₫{formatSocialMediaNumber(34000)}</span>
+                    Tiết kiệm <span className='text-sm text-orange'>₫{formatSocialMediaNumber(34000)}</span>
                   </div>
                 </div>
               </div>
