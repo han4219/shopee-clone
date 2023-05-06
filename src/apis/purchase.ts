@@ -15,7 +15,7 @@ const purchaseApi = {
       params: { status }
     })
   },
-  buyProducts(body: { product_id: string; buy_count: number }) {
+  buyProducts(body: { product_id: string; buy_count: number }[]) {
     return request.post<ResponseSuccess<Purchase[]>>(`${URL}/buy-products`, body)
   },
   updatePurchase({ product_id, buy_count }: { product_id: string; buy_count: number }) {
