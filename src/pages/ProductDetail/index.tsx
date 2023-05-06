@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { createSearchParams, useNavigate, useParams } from 'react-router-dom'
 import productApi from 'src/apis/product'
 import RatingStarProduct from 'src/components/RatingStarProduct'
 import Cart from 'src/svgs/Cart'
@@ -15,6 +15,7 @@ import QuantityController from 'src/components/QuantityController'
 import purchaseApi from 'src/apis/purchase'
 import { toast } from 'react-toastify'
 import { purchasesStatus } from 'src/constants/purchase'
+import path from 'src/constants/path'
 
 const ProductDetail = () => {
   const queryClient = useQueryClient()
@@ -22,6 +23,7 @@ const ProductDetail = () => {
   const { nameId } = useParams()
   const id = getProductIdFromURL(nameId as string)
   const imageRef = useRef<HTMLImageElement>(null)
+  const navigate = useNavigate()
   const [currentImagesIndex, setCurrentImagesIndex] = useState([0, 5])
   const [indexActiveImage, setIndexActiveImage] = useState(0)
 
@@ -50,6 +52,20 @@ const ProductDetail = () => {
     onSuccess: (data) => {
       toast.success(data.data.message, {
         position: 'bottom-left'
+      })
+    }
+  })
+
+  const buyNowMutation = useMutation({
+    mutationKey: ['buy-now'],
+    mutationFn: purchaseApi.addToCart,
+    onSuccess: () => {
+      navigate({
+        pathname: path.cart,
+        search: createSearchParams({
+          id,
+          quantity: buyCount.toString()
+        }).toString()
       })
     }
   })
@@ -97,6 +113,10 @@ const ProductDetail = () => {
 
   const handleRemoveZoom = () => {
     imageRef.current?.removeAttribute('style')
+  }
+
+  const handleBuyNow = (data: { product_id: string; buy_count: number }) => {
+    buyNowMutation.mutate(data)
   }
 
   if (!data) return null
@@ -219,7 +239,12 @@ const ProductDetail = () => {
                             <Cart stroke='#ee4d2d' />
                             <span className='text-base capitalize text-orange'>thêm vào giỏ hàng</span>
                           </button>
-                          <button className='rounded-sm bg-orange px-6 py-3 text-base text-white'>Mua Ngay</button>
+                          <button
+                            onClick={() => handleBuyNow({ product_id: data.data.data._id, buy_count: buyCount })}
+                            className='rounded-sm bg-orange px-6 py-3 text-base text-white'
+                          >
+                            Mua Ngay
+                          </button>
                         </div>
                       </div>
                     </div>

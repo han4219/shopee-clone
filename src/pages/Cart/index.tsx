@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import purchaseApi from 'src/apis/purchase'
 import QuantityController from 'src/components/QuantityController'
 import path from 'src/constants/path'
@@ -11,6 +11,7 @@ import { generateProductNameIdInURL } from 'src/utils/utils'
 import { produce } from 'immer'
 import { keyBy } from 'lodash'
 import { toast } from 'react-toastify'
+import useQueryParams from 'src/hooks/useQueryParams'
 
 interface ExtendedPurchase extends Purchase {
   disable: boolean
@@ -18,6 +19,8 @@ interface ExtendedPurchase extends Purchase {
 }
 
 export default function Cart() {
+  const { id } = useQueryParams()
+  const navigate = useNavigate()
   const [extendedPuchases, setExtendedPurchases] = useState<ExtendedPurchase[]>([])
   const isCheckedAll = useMemo(() => {
     return extendedPuchases.every((purchase) => purchase.checked)
@@ -124,16 +127,21 @@ export default function Cart() {
   }
 
   useEffect(() => {
+    let index = 0
     setExtendedPurchases((prev) => {
       const purchaseObject = keyBy(prev, '_id')
+      index++
       return (
         purchaseData?.data.data.map((purchase) => ({
           ...purchase,
           disable: false,
-          checked: Boolean(purchaseObject[purchase._id]?.checked || false)
+          checked: id === purchase.product._id || Boolean(purchaseObject[purchase._id]?.checked || false)
         })) || []
       )
     })
+    if (purchaseData && index === purchaseData?.data.data.length - 1) {
+      navigate(path.cart)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchaseData])
 
