@@ -80,13 +80,13 @@ export default function CartHeader() {
                   <div className='flex flex-col rounded-sm bg-white shadow-md'>
                     <Link
                       className='px-5 py-3 text-sm transition-all hover:bg-gray-100 hover:text-cyan'
-                      to={path.profile}
+                      to={'/user/' + path.profile}
                     >
                       Tài khoản của tôi
                     </Link>
                     <Link
                       className='px-5 py-3 text-sm transition-all hover:bg-gray-100 hover:text-cyan'
-                      to={path.purchase}
+                      to={'/user/' + path.purchaseOrder}
                     >
                       Đơn mua
                     </Link>

@@ -5,12 +5,15 @@ import NotFound from './pages/NotFound'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import RegisterLayout from './layouts/RegisterLayout'
-import Profile from './pages/Profile'
 import { useContext } from 'react'
 import { AppAuthContext } from './contexts/AuthContext'
 import ProductDetail from './pages/ProductDetail'
 import path from './constants/path'
 import Cart from './pages/Cart'
+import Profile from './pages/User/Profile'
+import ChangePassword from './pages/User/ChangePassword'
+import PurchaseOrder from './pages/User/PurchaseOrder'
+import UserLayout from './pages/User/UserLayout'
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppAuthContext)
@@ -29,16 +32,29 @@ const useRouteElements = () => {
       element: <ProtectedRoute />,
       children: [
         {
-          path: '',
           element: <MainLayout />,
           children: [
             {
-              path: path.profile,
-              element: <Profile />
-            },
-            {
               path: path.cart,
               element: <Cart />
+            },
+            {
+              path: 'user',
+              element: <UserLayout />,
+              children: [
+                {
+                  path: path.profile,
+                  element: <Profile />
+                },
+                {
+                  path: path.changePassword,
+                  element: <ChangePassword />
+                },
+                {
+                  path: path.purchaseOrder,
+                  element: <PurchaseOrder />
+                }
+              ]
             }
           ]
         }
@@ -68,12 +84,11 @@ const useRouteElements = () => {
     },
 
     {
-      path: '',
+      path: '/',
       element: <MainLayout />,
       children: [
         {
           index: true,
-          path: '',
           element: <Products />
         },
         {
