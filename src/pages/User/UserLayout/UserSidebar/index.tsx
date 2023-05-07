@@ -4,7 +4,7 @@ import path from 'src/constants/path'
 
 export default function UserSidebar() {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col py-4'>
       <div className='flex items-center gap-4 border-b-[2px] border-b-gray-200 pb-8'>
         <Link to={'/user/' + path.profile} className='h-10 w-10 overflow-hidden rounded-full'>
           <img
