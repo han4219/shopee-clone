@@ -133,11 +133,6 @@ export default function PurchaseOrder() {
                             ₫{formatProductPrice(purchase.buy_count * purchase.price)}
                           </span>
                         </div>
-                        <div className='my-2'>
-                          <button className='rounded bg-orange px-10 py-2 text-white transition-colors hover:bg-orange/80'>
-                            Mua Lại
-                          </button>
-                        </div>
                       </div>
                     </div>
                   </div>
