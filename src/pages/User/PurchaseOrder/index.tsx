@@ -58,13 +58,10 @@ export default function PurchaseOrder() {
                       status: tab.status
                     }).toString()
                   }}
-                  className={classNames(
-                    'flex items-center justify-center border-b-2 py-3 text-sm text-base capitalize',
-                    {
-                      'border-b-orange text-orange': status === tab.status,
-                      '': status !== tab.status
-                    }
-                  )}
+                  className={classNames('flex items-center justify-center border-b-2 py-3 text-sm capitalize', {
+                    'border-b-orange text-orange': status === tab.status,
+                    '': status !== tab.status
+                  })}
                 >
                   {tab.label}
                 </Link>
