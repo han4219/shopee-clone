@@ -48,7 +48,7 @@ class Http {
         }
         if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
           const data: any = error.response?.data
-          const message = data.message || error.message
+          const message = data?.message || error.message
           toast.error(message, {
             position: 'top-center'
           })

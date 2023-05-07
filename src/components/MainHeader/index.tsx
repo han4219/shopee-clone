@@ -16,6 +16,7 @@ import Search from 'src/svgs/Search'
 import { formatProductPrice } from 'src/utils/format'
 import Cart from 'src/svgs/Cart'
 import useSearchProducts from 'src/hooks/useSearchProducts'
+import { getAvatarURL } from 'src/utils/utils'
 
 export default function MainHeader() {
   const { user } = useContext(AppAuthContext)
@@ -112,13 +113,17 @@ export default function MainHeader() {
               <div className='flex cursor-pointer items-center gap-2'>
                 <div>
                   <img
-                    src='https://images2.thanhnien.vn/Uploaded/gianglao/2022_04_07/benzema-afp-1371.jpeg'
+                    src={
+                      user?.avatar
+                        ? getAvatarURL(user.avatar)
+                        : 'https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png'
+                    }
                     className='h-5 w-5 rounded-full'
                     alt=''
                   />
                 </div>
                 <div>
-                  <p>{user?.email}</p>
+                  <p>{user?.name || user?.email}</p>
                 </div>
               </div>
             </Popover>

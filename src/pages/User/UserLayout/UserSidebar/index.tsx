@@ -1,20 +1,28 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import path from 'src/constants/path'
+import { AppAuthContext } from 'src/contexts/AuthContext'
+import { getAvatarURL } from 'src/utils/utils'
 
 export default function UserSidebar() {
+  const { user } = useContext(AppAuthContext)
+
   return (
     <div className='flex flex-col py-4'>
       <div className='flex items-center gap-4 border-b-[2px] border-b-gray-200 pb-8'>
         <Link to={'/user/' + path.profile} className='h-10 w-10 overflow-hidden rounded-full'>
           <img
-            src='https://down-vn.img.susercontent.com/file/bffa3c30229ce7373dd9b114d9ac74a9_tn'
+            src={
+              user?.avatar
+                ? getAvatarURL(user.avatar)
+                : 'https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png'
+            }
             alt='avatar'
-            className='object-cover'
+            className='h-full w-full object-cover'
           />
         </Link>
         <div className='flex flex-col justify-center'>
-          <b className='truncate'>anhan4222000</b>
+          <b className='truncate'>{user?.name || user?.email}</b>
           <Link to={'/user/' + path.profile} className='flex items-center gap-1 font-semibold capitalize text-gray-500'>
             <svg
               width={12}

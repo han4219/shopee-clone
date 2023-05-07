@@ -20,3 +20,9 @@ export const generateProductNameIdInURL = (name: string, id: string) => {
 export const getProductIdFromURL = (nameId: string) => {
   return nameId.split('-i-')[nameId.split('-i-').length - 1]
 }
+
+export const getAvatarURL = (name?: string) => {
+  return name
+    ? `${import.meta.env.VITE_API_URL}/images/${name}`
+    : 'https://w7.pngwing.com/pngs/81/570/png-transparent-profile-logo-computer-icons-user-user-blue-heroes-logo-thumbnail.png'
+}
