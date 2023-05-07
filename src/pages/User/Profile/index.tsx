@@ -19,6 +19,8 @@ type FormDataError = Omit<FormData, 'date_of_birth'> & {
 }
 const profileSchema = userSchema.pick(['address', 'avatar', 'date_of_birth', 'name', 'phone'])
 
+const MAX_SIZE_AVATAR = 1048576
+
 export default function Profile() {
   const {
     control,
@@ -26,8 +28,7 @@ export default function Profile() {
     formState: { errors },
     handleSubmit,
     setValue,
-    setError,
-    watch
+    setError
   } = useForm<FormData>({
     defaultValues: {
       address: '',
@@ -39,13 +40,13 @@ export default function Profile() {
     resolver: yupResolver(profileSchema)
   })
 
-  const avatar = watch('avatar')
-
   const inputFileRef = useRef<HTMLInputElement>(null)
   const [fileFromLocal, setFileFromLocal] = useState<File>()
   const previewImage = useMemo(() => {
     return fileFromLocal ? URL.createObjectURL(fileFromLocal) : ''
   }, [fileFromLocal])
+
+  console.log(previewImage)
 
   const { setUser } = useContext(AppAuthContext)
   const { data: profileData, refetch } = useQuery({
@@ -58,7 +59,7 @@ export default function Profile() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      let avatarName = avatar
+      let avatarName = ''
       if (fileFromLocal) {
         const form = new FormData()
         form.append('image', fileFromLocal)
@@ -94,9 +95,18 @@ export default function Profile() {
     }
   })
 
+  console.log('render')
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    setFileFromLocal(file)
+    if (file && (file.size >= MAX_SIZE_AVATAR || !file?.type.includes('image'))) {
+      toast.error('Dung lượng file tối đa 1 MB. Định dạng:.JPEG, .PNG', {
+        position: 'bottom-left',
+        autoClose: 2000
+      })
+    } else {
+      setFileFromLocal(file)
+    }
   }
 
   const handleUpload = () => {
@@ -105,7 +115,6 @@ export default function Profile() {
 
   useEffect(() => {
     if (profile) {
-      console.log(getAvatarURL(profile.avatar))
       setValue('address', profile.address)
       setValue('avatar', getAvatarURL(profile.avatar))
       setValue('name', profile.name)
@@ -210,17 +219,16 @@ export default function Profile() {
         <div className='md:w-72 md:border-l md:border-l-gray-200 md:px-10'>
           <div className='flex w-full flex-col items-center'>
             <div className='h-20 w-20 overflow-hidden rounded-full'>
-              <img
-                className='h-full w-full object-cover'
-                src={previewImage || profile?.avatar ? getAvatarURL(avatar) : avatar}
-                alt=''
-              />
+              <img className='h-full w-full object-cover' src={previewImage || getAvatarURL(profile?.avatar)} alt='' />
             </div>
             <input
               type='file'
               accept='.jpg,.jpeg,.png'
               className='hidden'
               ref={inputFileRef}
+              onClick={(event) => {
+                ;(event.target as any).value = null
+              }}
               onChange={handleFileChange}
             />
             <button onClick={handleUpload} type='button' className='my-4 rounded-sm border bg-none px-4 py-2'>
