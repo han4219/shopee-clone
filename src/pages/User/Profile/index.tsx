@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import userApi from 'src/apis/user'
@@ -12,14 +12,13 @@ import { AppAuthContext } from 'src/contexts/AuthContext'
 import { setUserToLS } from 'src/utils/auth'
 import { getAvatarURL, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ResponseError } from 'src/types/utils.type'
+import InputFile from 'src/components/InputFile'
 
 type FormData = Pick<UserSchema, 'address' | 'avatar' | 'date_of_birth' | 'name' | 'phone'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
   date_of_birth?: string
 }
 const profileSchema = userSchema.pick(['address', 'avatar', 'date_of_birth', 'name', 'phone'])
-
-const MAX_SIZE_AVATAR = 1048576
 
 export default function Profile() {
   const {
@@ -40,13 +39,10 @@ export default function Profile() {
     resolver: yupResolver(profileSchema)
   })
 
-  const inputFileRef = useRef<HTMLInputElement>(null)
   const [fileFromLocal, setFileFromLocal] = useState<File>()
   const previewImage = useMemo(() => {
     return fileFromLocal ? URL.createObjectURL(fileFromLocal) : ''
   }, [fileFromLocal])
-
-  console.log(previewImage)
 
   const { setUser } = useContext(AppAuthContext)
   const { data: profileData, refetch } = useQuery({
@@ -94,24 +90,6 @@ export default function Profile() {
       }
     }
   })
-
-  console.log('render')
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file && (file.size >= MAX_SIZE_AVATAR || !file?.type.includes('image'))) {
-      toast.error('Dung lượng file tối đa 1 MB. Định dạng:.JPEG, .PNG', {
-        position: 'bottom-left',
-        autoClose: 2000
-      })
-    } else {
-      setFileFromLocal(file)
-    }
-  }
-
-  const handleUpload = () => {
-    inputFileRef.current?.click()
-  }
 
   useEffect(() => {
     if (profile) {
@@ -221,19 +199,7 @@ export default function Profile() {
             <div className='h-20 w-20 overflow-hidden rounded-full'>
               <img className='h-full w-full object-cover' src={previewImage || getAvatarURL(profile?.avatar)} alt='' />
             </div>
-            <input
-              type='file'
-              accept='.jpg,.jpeg,.png'
-              className='hidden'
-              ref={inputFileRef}
-              onClick={(event) => {
-                ;(event.target as any).value = null
-              }}
-              onChange={handleFileChange}
-            />
-            <button onClick={handleUpload} type='button' className='my-4 rounded-sm border bg-none px-4 py-2'>
-              Chọn Ảnh
-            </button>
+            <InputFile onChange={(file) => setFileFromLocal(file)} />
             <div className='text-xs text-gray-500'>Dung lượng file tối đa 1 MB</div>
             <div className='text-xs text-gray-500'>Định dạng:.JPEG, .PNG</div>
           </div>

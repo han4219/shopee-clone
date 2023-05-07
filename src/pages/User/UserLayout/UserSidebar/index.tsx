@@ -1,5 +1,6 @@
+import classNames from 'classnames'
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import path from 'src/constants/path'
 import { AppAuthContext } from 'src/contexts/AuthContext'
 import { getAvatarURL } from 'src/utils/utils'
@@ -44,18 +45,32 @@ export default function UserSidebar() {
 
       <div className='mt-4 flex flex-col gap-5'>
         <div className=''>
-          <Link to={'/user/' + path.profile} className='flex items-center gap-3 capitalize'>
+          <NavLink
+            to={'/user/' + path.profile}
+            className={({ isActive }) =>
+              classNames('flex items-center gap-3 capitalize', {
+                'font-bold text-orange': isActive
+              })
+            }
+          >
             <img
               src='https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4'
               alt=''
               className='h-5 w-5'
             />
             tài khoản của tôi
-          </Link>
+          </NavLink>
         </div>
 
         <div>
-          <Link to={'/user/' + path.changePassword} className='flex items-end gap-3 capitalize'>
+          <NavLink
+            to={'/user/' + path.changePassword}
+            className={({ isActive }) =>
+              classNames('flex items-end gap-3 capitalize', {
+                'font-bold text-orange': isActive
+              })
+            }
+          >
             <svg width={24} height={24} fill='none' className='-ml-[2px]'>
               <path
                 fillRule='evenodd'
@@ -65,17 +80,24 @@ export default function UserSidebar() {
               />
             </svg>
             đổi mật khẩu
-          </Link>
+          </NavLink>
         </div>
         <div>
-          <Link to={'/user/' + path.purchaseOrder} className='flex items-end gap-3 capitalize'>
+          <NavLink
+            to={'/user/' + path.purchaseOrder}
+            className={({ isActive }) =>
+              classNames('flex items-end gap-3 capitalize', {
+                'font-bold text-orange': isActive
+              })
+            }
+          >
             <img
               src='https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078'
               alt=''
               className='h-5 w-5'
             />
             đơn mua
-          </Link>
+          </NavLink>
         </div>
       </div>
     </div>
