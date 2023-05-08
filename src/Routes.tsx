@@ -1,19 +1,20 @@
-import Login from './pages/Login'
-import Products from './pages/ProductsList'
-import Register from './pages/Register'
-import NotFound from './pages/NotFound'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import RegisterLayout from './layouts/RegisterLayout'
-import { useContext } from 'react'
+import { useContext, lazy, Suspense } from 'react'
 import { AppAuthContext } from './contexts/AuthContext'
-import ProductDetail from './pages/ProductDetail'
 import path from './constants/path'
-import Cart from './pages/Cart'
-import Profile from './pages/User/Profile'
-import ChangePassword from './pages/User/ChangePassword'
-import PurchaseOrder from './pages/User/PurchaseOrder'
-import UserLayout from './pages/User/UserLayout'
+
+const Cart = lazy(() => import('./pages/Cart'))
+const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
+const NotFound = lazy(() => import('./pages/NotFound'))
+const Products = lazy(() => import('./pages/ProductsList'))
+const Profile = lazy(() => import('./pages/User/Profile'))
+const ChangePassword = lazy(() => import('./pages/User/ChangePassword'))
+const PurchaseOrder = lazy(() => import('./pages/User/PurchaseOrder'))
+const UserLayout = lazy(() => import('./pages/User/UserLayout'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(AppAuthContext)
@@ -36,23 +37,43 @@ const useRouteElements = () => {
           children: [
             {
               path: path.cart,
-              element: <Cart />
+              element: (
+                <Suspense>
+                  <Cart />
+                </Suspense>
+              )
             },
             {
               path: 'user',
-              element: <UserLayout />,
+              element: (
+                <Suspense>
+                  <UserLayout />
+                </Suspense>
+              ),
               children: [
                 {
                   path: path.profile,
-                  element: <Profile />
+                  element: (
+                    <Suspense>
+                      <Profile />
+                    </Suspense>
+                  )
                 },
                 {
                   path: path.changePassword,
-                  element: <ChangePassword />
+                  element: (
+                    <Suspense>
+                      <ChangePassword />
+                    </Suspense>
+                  )
                 },
                 {
                   path: path.purchaseOrder,
-                  element: <PurchaseOrder />
+                  element: (
+                    <Suspense>
+                      <PurchaseOrder />
+                    </Suspense>
+                  )
                 }
               ]
             }
@@ -68,7 +89,9 @@ const useRouteElements = () => {
           path: path.login,
           element: (
             <RegisterLayout>
-              <Login />
+              <Suspense>
+                <Login />
+              </Suspense>
             </RegisterLayout>
           )
         },
@@ -76,7 +99,9 @@ const useRouteElements = () => {
           path: path.register,
           element: (
             <RegisterLayout>
-              <Register />
+              <Suspense>
+                <Register />
+              </Suspense>
             </RegisterLayout>
           )
         }
@@ -89,17 +114,29 @@ const useRouteElements = () => {
       children: [
         {
           index: true,
-          element: <Products />
+          element: (
+            <Suspense>
+              <Products />
+            </Suspense>
+          )
         },
         {
           path: path.productDetail,
-          element: <ProductDetail />
+          element: (
+            <Suspense>
+              <ProductDetail />
+            </Suspense>
+          )
         }
       ]
     },
     {
       path: '*',
-      element: <NotFound />
+      element: (
+        <Suspense>
+          <NotFound />
+        </Suspense>
+      )
     }
   ])
 
